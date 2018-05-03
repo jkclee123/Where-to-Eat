@@ -1,0 +1,69 @@
+{
+  "districts": {
+    "Causeway Bay": 
+    [
+      {
+          "name": "米走雞Deluxe",
+          "cuisine": [
+              "Hong Kong Style",
+              "International",
+              "Hot Pot",
+              "Chicken Hot Pot"
+          ],
+          "price-range": "$101-200",
+          "address": [
+              "22.279408",
+              "114.1856449"
+          ],
+          "rating": "4",
+          "reviews": [
+              "165",
+              "4",
+              "7"
+          ],
+          "district": "Causeway Bay",
+          "url": "https://www.openrice.com/en/hongkong/r-running-chicken-deluxe-causeway-bay-hong-kong-style-chicken-hot-pot-r504576"
+      },
+      {
+          "name": "Manecy's Studio Restaurant",
+          "cuisine": [
+              "German",
+              "Spanish"
+          ],
+          "price-range": "$101-200",
+          "address": [
+              "22.2801635684006",
+              "114.181371359182"
+          ],
+          "rating": "4",
+          "reviews": [
+              "55",
+              "6",
+              "3"
+          ],
+          "district": "Causeway Bay",
+          "url": "https://www.openrice.com/en/hongkong/r-manecys-studio-restaurant-causeway-bay-german-r533650"
+      },
+      {
+          "name": "The Grill Room",
+          "cuisine": [
+              "Western",
+              "Steak House"
+          ],
+          "price-range": "$201-400",
+          "address": [
+              "22.2801955",
+              "114.181667"
+          ],
+          "rating": "4",
+          "reviews": [
+              "455",
+              "61",
+              "24"
+          ],
+          "district": "Causeway Bay",
+          "url": "https://www.openrice.com/en/hongkong/r-the-grill-room-causeway-bay-western-r446983"
+      }
+    ]
+  }
+}

@@ -1,7 +1,7 @@
 module.exports = [
   {
     _id: Math.round(Math.random() * 1000000),
-    text: 'Hi I am WhereToEat, your personal resturant search assistant.\nDo you know what resturant you are looking for?',
+    text: 'Hi I am WhereToEat, your personal resturant search assistant.',
     createdAt: new Date(),
     user: {
       _id: 2,

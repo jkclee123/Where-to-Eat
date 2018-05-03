@@ -30,17 +30,24 @@ export default class Example extends React.Component {
     this.onLoadEarlier = this.onLoadEarlier.bind(this);
     this.message_state = 0;
     this._isAlright = null;
-    this.openrice_json = null;
+    this.json_position = 0;
+    this.blacklist_cuisine = [];
+    this.openrice_json = '{ "resturants" : [' +
+      '{ "name":"Deluxe" , "cuisine":["Hong Kong Style", "International", "Hot Pot", "Chicken Hot Pot"], "districts":"Causeway Bay", "price-range":"normal"},' +
+      '{ "name":"The Grill Room" , "cuisine":["Western", "Steak House"], "districts":"Mong Kok", "price-range":"expensive" },' +
+      '{ "name":"HeSheEat" , "cuisine":["Western", "Dessert", "All Day Breakfast", "Coffee Shop"], "districts":"Central", "price-range": "cheap"} ]}';
   }
 
   componentWillMount() {
     this._isMounted = true;
     this.message_state = 1;
-    fetch('https://firebasestorage.googleapis.com/v0/b/eatwhatho-cd3ea.appspot.com/o/openrice_data2.json?alt=media&token=b172c8bc-7ff1-469d-8f09-4f42fdff0737')
-      .then((response) => response.json())
-      .then((responseJson) => {
-        this.openrice_json = responseJson;
-      });
+
+    // fetch('https://firebasestorage.googleapis.com/v0/b/eatwhatho-cd3ea.appspot.com/o/openrice_data2.json?alt=media&token=b172c8bc-7ff1-469d-8f09-4f42fdff0737')
+    //   .then((response) => response.json())
+    //   .then((responseJson) => {
+    //     this.openrice_json = responseJson;
+    //   });
+
     this.setState(() => {
       return {
         messages: require('./data/messages.js'),
@@ -84,8 +91,13 @@ export default class Example extends React.Component {
   }
 
   answerDemo(messages) {
-    var obj = JSON.parse(this.openrice_json)
-    this.onReceive(obj.district);
+    // var result = JSON.parse(this.openrice_json);
+    // var employees = {}
+    // for (var i = 0, emp; i < result.employees.length; i++) {
+    //   emp = result.districts[i];
+    //   this.onReceive(emp.firstName);
+    // }
+
     if (messages.length > 0) {
       this.setState((previousState) => {
         return {
@@ -112,22 +124,22 @@ export default class Example extends React.Component {
       }
       */
 
-      this.onReceive(this.openrice_json.length);
+
       if (this.message_state == 1){
-        var str = messages[0].text.toLowerCase()
-        if (str.substring(0, 1) == 'y'){
-          this.onReceive('Tell me what are you looking for!');
-          this.message_state = 2;
+        var result = JSON.parse(this.openrice_json);
+        var i = this.json_position;
+        for (; i < result.resturants.length; i++) {
+          if (this.not_in_cuisine(result.resturants[i].cuisine))
+            break;
         }
-        else if (str.substring(0, 1) == 'n'){
-          this.onReceive('Dont worry');
-          this.message_state = 3;
+        if (i >= result.resturants.length)
+          this.message_state = 4;
+        else{
+          this.json_position = i + 1;
+          this.onReceive('Is the resturant you are looking for called ' + result.resturants[i].name + '?');
+          this.onReceive('Located in ' + result.resturants[i].districts);
+          this.onReceive(result.resturants[i].cuisine);
         }
-        else
-          this.onReceive('Sorry I do not understand.');
-      }
-      else if (this.message_state == 3){
-        this.onReceive('Bye')
       }
 
       this.setState((previousState) => {
@@ -136,6 +148,16 @@ export default class Example extends React.Component {
         };
       });
     }, 1000);
+  }
+
+  not_in_cuisine(json_cuisine){
+    for (var i = 0; i < this.blacklist_cuisine.length; i++){
+      for (var j = 0; j < json_cuisine.length; j++){
+        if (this.blacklist_cuisine[i] == json_cuisine[j])
+          return false;
+      }
+    }
+    return true;
   }
 
   onReceive(text) {
