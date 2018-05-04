@@ -129,7 +129,7 @@ export default class Example extends React.Component {
         var result = JSON.parse(this.openrice_json);
         var i = this.json_position;
         for (; i < result.resturants.length; i++) {
-          if (this.not_in_cuisine(result.resturants[i].cuisine))
+          if (this.not_in(this.blacklist_cuisine, result.resturants[i].cuisine))
             break;
         }
         if (i >= result.resturants.length)
@@ -150,10 +150,10 @@ export default class Example extends React.Component {
     }, 1000);
   }
 
-  not_in_cuisine(json_cuisine){
-    for (var i = 0; i < this.blacklist_cuisine.length; i++){
-      for (var j = 0; j < json_cuisine.length; j++){
-        if (this.blacklist_cuisine[i] == json_cuisine[j])
+  not_in(blacklist, jsonlist){
+    for (var i = 0; i < blacklist.length; i++){
+      for (var j = 0; j < jsonlist.length; j++){
+        if (this.blacklist[i] == jsonlist[j])
           return false;
       }
     }
