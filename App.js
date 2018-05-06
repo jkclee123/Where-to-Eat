@@ -10,14 +10,15 @@ import {GiftedChat, Actions, Bubble, SystemMessage} from 'react-native-gifted-ch
 import CustomActions from './CustomActions';
 import CustomView from './CustomView';
 
+const openrice_data = require('./openrice_data.json');
+const districts_list = require('./districts_list.json')
+
 export default class Example extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       messages: [],
-      loadEarlier: true,
-      typingText: null,
-      isLoadingEarlier: false
+      typingText: null
     };
 
     this._isMounted = false;
@@ -27,15 +28,10 @@ export default class Example extends React.Component {
     this.renderBubble = this.renderBubble.bind(this);
     this.renderSystemMessage = this.renderSystemMessage.bind(this);
     this.renderFooter = this.renderFooter.bind(this);
-    this.onLoadEarlier = this.onLoadEarlier.bind(this);
     this.message_state = 0;
-    this._isAlright = null;
     this.json_position = 0;
     this.blacklist_cuisine = [];
-    this.openrice_json = '{ "resturants" : [' +
-      '{ "name":"Deluxe" , "cuisine":["Hong Kong Style", "International", "Hot Pot", "Chicken Hot Pot"], "districts":"Causeway Bay", "price-range":"normal"},' +
-      '{ "name":"The Grill Room" , "cuisine":["Western", "Steak House"], "districts":"Mong Kok", "price-range":"expensive" },' +
-      '{ "name":"HeSheEat" , "cuisine":["Western", "Dessert", "All Day Breakfast", "Coffee Shop"], "districts":"Central", "price-range": "cheap"} ]}';
+    this.district = null;
   }
 
   componentWillMount() {
@@ -50,7 +46,7 @@ export default class Example extends React.Component {
 
     this.setState(() => {
       return {
-        messages: require('./data/messages.js'),
+        messages: require('./data/messages.js')
       };
     });
   }
@@ -59,34 +55,12 @@ export default class Example extends React.Component {
     this._isMounted = false;
   }
 
-  onLoadEarlier() {
-    this.setState((previousState) => {
-      return {
-        isLoadingEarlier: true,
-      };
-    });
-  
-    setTimeout(() => {
-      if (this._isMounted === true) {
-        this.setState((previousState) => {
-          return {
-            // messages: GiftedChat.prepend(previousState.messages, require('./data/old_messages.js')),
-            loadEarlier: false,
-            isLoadingEarlier: false,
-          };
-        });
-      }
-    }, 1000); // simulating network
-  }
-
   onSend(messages = []) {
     this.setState((previousState) => {
       return {
         messages: GiftedChat.append(previousState.messages, messages),
       };
     });
-
-    // for demo purpose
     this.answerDemo(messages);
   }
 
@@ -123,22 +97,31 @@ export default class Example extends React.Component {
         }
       }
       */
-
-
       if (this.message_state == 1){
-        var result = JSON.parse(this.openrice_json);
-        var i = this.json_position;
-        for (; i < result.resturants.length; i++) {
-          if (this.not_in(this.blacklist_cuisine, result.resturants[i].cuisine))
-            break;
+        var working_districts_list = districts_list.districts;
+        if (!(this.not_in([messages[0].text.toLowerCase()], districts_list.districts))){
+          this.district = messages[0].text.toLowerCase();
+          this.message_state = 2;
         }
-        if (i >= result.resturants.length)
+        else
+          this.onReceive('Tell me the district you are search resturant from!')
+      }
+      if (this.message_state == 3){
+      }
+      if (this.message_state == 2){
+        for (var i = this.json_position; i < openrice_data.resturants.length; i++) {
+          if (this.not_in(this.blacklist_cuisine, openrice_data.resturants[i].cuisine))
+            break;
+
+        }
+        if (i >= openrice_data.resturants.length)
           this.message_state = 4;
         else{
           this.json_position = i + 1;
-          this.onReceive('Is the resturant you are looking for called ' + result.resturants[i].name + '?');
-          this.onReceive('Located in ' + result.resturants[i].districts);
-          this.onReceive(result.resturants[i].cuisine);
+          this.onReceive('Is the resturant you are looking for called ' + openrice_data.resturants[i].name + '?');
+          this.onReceive('Located in ' + openrice_data.resturants[i].district);
+          this.onReceive(openrice_data.resturants[i].cuisine);
+          this.message_state = 3;
         }
       }
 
@@ -150,10 +133,10 @@ export default class Example extends React.Component {
     }, 1000);
   }
 
-  not_in(blacklist, jsonlist){
-    for (var i = 0; i < blacklist.length; i++){
-      for (var j = 0; j < jsonlist.length; j++){
-        if (this.blacklist[i] == jsonlist[j])
+  not_in(sublist, list){
+    for (var i = 0; i < sublist.length; i++){
+      for (var j = 0; j < list.length; j++){
+        if (sublist[i] == list[j])
           return false;
       }
     }

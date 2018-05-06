@@ -1,6 +1,6 @@
 {
   "districts": {
-    "Causeway Bay": 
+    "Causeway_Bay": 
     [
       {
           "name": "米走雞Deluxe",
@@ -5264,7 +5264,7 @@
           "url": "https://www.openrice.com/en/hongkong/r-habit-table-causeway-bay-italian-meatless-menu-r122664"
       }
     ],
-    "Mong Kok":
+    "Mong_Kok":
     [
       {
           "name": "Mini Friday",
@@ -10522,7 +10522,7 @@
           "url": "https://www.openrice.com/en/hongkong/r-loyi-faateng-mong-kok-western-salad-r489704"
       }
     ],
-    "Tsim Sha Tsui":
+    "Tsim_Sha_Tsui":
     [
       {
           "name": "聚手工火鍋",

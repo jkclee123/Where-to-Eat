@@ -1,69 +1,130 @@
 {
-  "districts": {
-    "Causeway Bay": 
-    [
-      {
-          "name": "米走雞Deluxe",
-          "cuisine": [
-              "Hong Kong Style",
-              "International",
-              "Hot Pot",
-              "Chicken Hot Pot"
-          ],
-          "price-range": "$101-200",
-          "address": [
-              "22.279408",
-              "114.1856449"
-          ],
-          "rating": "4",
-          "reviews": [
-              "165",
-              "4",
-              "7"
-          ],
-          "district": "Causeway Bay",
-          "url": "https://www.openrice.com/en/hongkong/r-running-chicken-deluxe-causeway-bay-hong-kong-style-chicken-hot-pot-r504576"
-      },
-      {
-          "name": "Manecy's Studio Restaurant",
-          "cuisine": [
-              "German",
-              "Spanish"
-          ],
-          "price-range": "$101-200",
-          "address": [
-              "22.2801635684006",
-              "114.181371359182"
-          ],
-          "rating": "4",
-          "reviews": [
-              "55",
-              "6",
-              "3"
-          ],
-          "district": "Causeway Bay",
-          "url": "https://www.openrice.com/en/hongkong/r-manecys-studio-restaurant-causeway-bay-german-r533650"
-      },
-      {
-          "name": "The Grill Room",
-          "cuisine": [
-              "Western",
-              "Steak House"
-          ],
-          "price-range": "$201-400",
-          "address": [
-              "22.2801955",
-              "114.181667"
-          ],
-          "rating": "4",
-          "reviews": [
-              "455",
-              "61",
-              "24"
-          ],
-          "district": "Causeway Bay",
-          "url": "https://www.openrice.com/en/hongkong/r-the-grill-room-causeway-bay-western-r446983"
-      }
-    ]
-  }
+  "resturants": [
+    {
+      "name": "米走雞Deluxe",
+      "cuisine": [
+          "Hong Kong Style",
+          "International",
+          "Hot Pot",
+          "Chicken Hot Pot"
+      ],
+      "price-range": "$101-200",
+      "address": [
+          "22.279408",
+          "114.1856449"
+      ],
+      "rating": "4",
+      "reviews": [
+          "165",
+          "4",
+          "7"
+      ],
+      "district": "Causeway Bay",
+      "url": "https://www.openrice.com/en/hongkong/r-running-chicken-deluxe-causeway-bay-hong-kong-style-chicken-hot-pot-r504576"
+    },
+    {
+      "name": "Manecy's Studio Restaurant",
+      "cuisine": [
+          "German",
+          "Spanish"
+      ],
+      "price-range": "$101-200",
+      "address": [
+          "22.2801635684006",
+          "114.181371359182"
+      ],
+      "rating": "4",
+      "reviews": [
+          "55",
+          "6",
+          "3"
+      ],
+      "district": "Causeway Bay",
+      "url": "https://www.openrice.com/en/hongkong/r-manecys-studio-restaurant-causeway-bay-german-r533650"
+    },
+    {
+      "name": "聚手工火鍋",
+      "cuisine": [
+          "Guangdong",
+          "Japanese",
+          "Hot Pot",
+          "Seafood",
+          "Sushi/Sashimi"
+      ],
+      "price-range": "$201-400",
+      "address": [
+          "22.3009841152824",
+          "114.174272860466"
+      ],
+      "rating": "3.5",
+      "reviews": [
+          "40",
+          "8",
+          "5"
+      ],
+      "district": "Tsim Sha Tsui",
+      "url": "https://www.openrice.com/en/hongkong/r-hive-hotpot-tsim-sha-tsui-japanese-hot-pot-r103136"
+    },
+    {
+      "name": "Lady M",
+      "cuisine": [
+          "Western",
+          "Bakery",
+          "Coffee Shop"
+      ],
+      "price-range": "$51-100",
+      "address": [
+          "22.2948671038521",
+          "114.166831970215"
+      ],
+      "rating": "3.5",
+      "reviews": [
+          "205",
+          "75",
+          "10"
+      ],
+      "district": "Tsim Sha Tsui",
+      "url": "https://www.openrice.com/en/hongkong/r-lady-m-tsim-sha-tsui-western-bakery-r452485"
+    },
+    {
+      "name": "Mini Friday",
+      "cuisine": [
+          "French",
+          "Cake"
+      ],
+      "price-range": "$101-200",
+      "address": [
+          "22.3162416",
+          "114.1708149"
+      ],
+      "rating": "4",
+      "reviews": [
+          "52",
+          "6",
+          "1"
+      ],
+      "district": "Mong Kok",
+      "url": "https://www.openrice.com/en/hongkong/r-mini-friday-mong-kok-french-cake-r529022"
+    },
+    {
+      "name": "鮮入圍煮",
+      "cuisine": [
+          "Guangdong",
+          "Hot Pot"
+      ],
+      "price-range": "$201-400",
+      "address": [
+          "22.3156968",
+          "114.1711296"
+      ],
+      "rating": "4",
+      "reviews": [
+          "190",
+          "27",
+          "15"
+      ],
+      "district": "Mong Kok",
+      "url": "https://www.openrice.com/en/hongkong/r-market-hotpot-mong-kok-guangdong-hot-pot-r175710"
+    }
+  ]
 }
