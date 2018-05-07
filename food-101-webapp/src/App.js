@@ -243,28 +243,41 @@ class App extends Component {
       topK: null
     });
     console.log(event.target.files[0]);
-    let reader = new FileReader();
-    let file = event.target.files[0];
+    loadImage(
+      event.target.files[0],
+      img => {
+        if (img.type === 'error') {
+          console.log('Error loading image');
+          this.setState({
+            imageLoadingError: true,
+            imageLoading: false,
+            modelRunning: false,
+            url: null
+          });
 
-    reader.onloadend = () => {
-      let img = document.createElement("img");
-      img.src=reader.result;
-      let src = document.getElementById("App");
-      src.appendChild(img);
-      //console.log(reader.result);
-
-      const ctx = document.getElementById('input-canvas').getContext('2d');
-      ctx.drawImage(img, 0, 0);
-      this.setState({
-        imageLoadingError: false,
-        imageLoading: false,
-        modelRunning: true
-      });
-      setTimeout(() => {
-        this.runModel();
-      }, 3000)
-    }
-    reader.readAsDataURL(file)
+        } else {
+          console.log('Image Loaded');
+          const ctx = document.getElementById('input-canvas').getContext('2d');
+          ctx.drawImage(img, 0, 0);
+          this.setState({
+            imageLoadingError: false,
+            imageLoading: false,
+            modelRunning: true
+          });
+          setTimeout(() => {
+            this.runModel();
+          }, 1000)
+        }
+      },
+      {
+        maxWidth: 299,
+        maxHeight: 299,
+        cover: true,
+        crop: true,
+        canvas: true,
+        crossOrigin: 'Anonymous'
+      }
+    );
   }
 
   componentDidMount(){
