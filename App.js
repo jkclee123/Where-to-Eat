@@ -107,12 +107,15 @@ export default class Example extends React.Component {
           this.onReceive('Tell me the district you are search resturant from!')
       }
       if (this.message_state == 3){
+        if (messages[0].text.toLowerCase.substring(0, 1) == 'n')
+          this.message_state = 2o
       }
       if (this.message_state == 2){
         for (var i = this.json_position; i < openrice_data.resturants.length; i++) {
+          if (this.district != openrice_data.resturants[i].district.toLowerCase())
+            continue
           if (this.not_in(this.blacklist_cuisine, openrice_data.resturants[i].cuisine))
             break;
-
         }
         if (i >= openrice_data.resturants.length)
           this.message_state = 4;
