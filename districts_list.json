@@ -1,7 +1,8 @@
 {
-	"districts": [
-		"causeway bay",
-		"mong kok",
-		"tsim sha tsui"
-	]
+	"districts": {
+		"causeway bay" :["causeway bay", "cwb"],
+		"mong kok": ["mong kok", "mk"],
+		"tsim sha tsui": ["tsim sha tsui", "tst"],
+		"sha tin": ["shatin", "shatin"]
+	}
 }

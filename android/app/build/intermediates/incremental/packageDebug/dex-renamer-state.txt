@@ -1,0 +1,4 @@
+#Thu May 10 01:14:43 CST 2018
+base.0=F\:\\AndroidStudioProjects\\WhereToEat\\android\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\1f\\main
+renamed.0=classes.dex
+file.0=F\:\\AndroidStudioProjects\\WhereToEat\\android\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\1f\\main\\classes.dex

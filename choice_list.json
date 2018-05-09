@@ -1,0 +1,10 @@
+{
+	"choices": {
+		"location": ["far"],
+		"cuisine": ["taste", "cuisine"],
+		"pass": ["pass", "not", "no"],
+		"previous": ["previous", "last"],
+		"accept": ["good", "nice", "yes"],
+		"price": ["expensive", "cost"]
+	}
+}
