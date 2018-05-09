@@ -7,7 +7,8 @@ import {
   WebView,
   Dimensions,
   Button,
-  Image
+  Image,
+  YellowBox
 } from 'react-native';
 
 import {GiftedChat, Actions, Bubble, SystemMessage} from 'react-native-gifted-chat';
@@ -16,6 +17,8 @@ import CustomView from './CustomView';
 import { createStackNavigator } from 'react-navigation';
 import AndroidWebView from './AndroidWebView'
 import ImagePicker from 'react-native-image-picker'
+
+YellowBox.ignoreWarnings(['Warning: isMounted(...) is deprecated', 'Module RCTImageLoader']);
 
 const openrice_data = require('./openrice_data.json');
 const districts_list = require('./districts_list.json')
