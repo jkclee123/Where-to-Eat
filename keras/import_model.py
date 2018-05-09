@@ -7,10 +7,6 @@ K.set_session(sess)
 
 model = load_model('./model4b.10-0.68.hdf5')
 
-gd = sess.graph.as_graph_def()
-print(len(gd.node), 'Nodes')
-print(gd.node[:2])
-
 x = tf.placeholder(tf.float32, shape=model.get_input_shape_at(0))
 
 y = model(x)
@@ -20,7 +16,7 @@ import matplotlib.pyplot as plt
 
 img = plt.imread('test.jpg')
 
-plt.imshow(img)
+#plt.imshow(img)
 #plt.show()
 
 print ("start")
@@ -42,7 +38,15 @@ orig_scores = sess.run(y, feed_dict={x: imgs, K.learning_phase(): False})
 
 def find_top_pred(scores):
     top_label_ix = np.argmax(scores) # label 95 is Sushi
-    confidence = scores[0][top_label_ix]
-    print('Label: {}, Confidence: {}'.format(top_label_ix, confidence))
+    sort_arr = scores.argsort()[0]
+
+    file = open('food-101-label-cal.txt', "r")
+    lines = file.readlines()
+    file.close()
+
+    for i in range(5):
+    	top_label_ix = sort_arr[-1-i]
+    	confidence = scores[0][top_label_ix]
+    	print('Label: {}, Confidence: {}'.format(lines[top_label_ix].replace("\n",""), confidence))
 
 find_top_pred(orig_scores)
