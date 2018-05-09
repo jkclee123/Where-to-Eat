@@ -4,17 +4,39 @@ import {
   StyleSheet,
   Text,
   View,
+  WebView,
+  Dimensions
 } from 'react-native';
 
 import {GiftedChat, Actions, Bubble, SystemMessage} from 'react-native-gifted-chat';
 import CustomActions from './CustomActions';
 import CustomView from './CustomView';
+import { createStackNavigator } from 'react-navigation';
+import AndroidWebView from './AndroidWebView'
 
 const openrice_data = require('./openrice_data.json');
 const districts_list = require('./districts_list.json')
 const choice_list = require('./choice_list.json')
 
-export default class Chat extends React.Component {
+/*
+class HomeScreen extends React.Component {
+  render() {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Text>Home Screen</Text>
+        <Button
+          title="Go to Details"
+          onPress={() => this.props.navigation.navigate('Details')}
+        />
+      </View>
+    );
+  }
+}
+*/
+
+
+
+class HomeScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -200,7 +222,8 @@ export default class Chat extends React.Component {
     }
     const options = {
       'Food consultant': (props) => {
-        alert('option 1');
+        //alert('option 1');
+        this.props.navigation.navigate('Details');
       },
       'Cancel': () => {},
     };
@@ -211,7 +234,7 @@ export default class Chat extends React.Component {
       />
     );
   }
-
+//
   renderBubble(props) {
     return (
       <Bubble
@@ -282,7 +305,7 @@ export default class Chat extends React.Component {
     );
   }
 }
-
+//
 const styles = StyleSheet.create({
   footerContainer: {
     marginTop: 5,
@@ -295,3 +318,25 @@ const styles = StyleSheet.create({
     color: '#aaa',
   },
 });
+
+
+class DetailsScreen extends React.Component {
+  render() {
+    return (
+      <WebView
+        source={{uri: 'https://whattoeat.ironsout.com'}}
+        style={{marginTop: 20}}
+      />
+    );
+  }
+}
+
+export default createStackNavigator(
+  {
+    Home: HomeScreen,
+    Details: DetailsScreen,
+  },
+  {
+    initialRouteName: 'Home',
+  }
+);
