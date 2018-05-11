@@ -28,7 +28,8 @@ class HomeScreen extends React.Component {
     this.state = {
       messages: [],
       typingText: null,
-      target: null
+      target: null,
+      PicturePath: ""
     };
 
     this._isMounted = false;
@@ -48,6 +49,9 @@ class HomeScreen extends React.Component {
     this.choice = null;
     this.maxprice = 801.5;
     this.distance = 99;
+    this.prev_state = 0;
+    this.calories = 0;
+    this.gram = 0;
   }
 
   componentWillMount() {
@@ -60,11 +64,6 @@ class HomeScreen extends React.Component {
         messages: require('./data/messages.js')
       };
     });
-  }
-
-  componentDidMount(){
-    // if (this.target == null)
-    //   this.props.navigation.navigate('First')
   }
 
   componentWillUnmount() {
@@ -181,6 +180,15 @@ class HomeScreen extends React.Component {
         }
       }
 
+      if (this.message_state == 11){
+        if (isNaN(parseInt(messages[0].text)))
+          this.onReceive("How many grams did you consume?")
+        else{
+          this.onReceive("You have consumed " + parseInt(messages[0].text) / this.gram * this.calories + " calories.")
+          this.message_state = this.prev_state
+        }
+      }
+
       this.setState((previousState) => {
         return {
           typingText: null
@@ -197,6 +205,75 @@ class HomeScreen extends React.Component {
       }
     }
     return true;
+  }
+
+  handleClick(){
+    if (this.message_state == 10 || this.message_state == 11){
+      this.onReceive("Cannot choose image now.")
+      return;
+    }
+    ImagePicker.showImagePicker(options, (response) => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      }
+      else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      }
+      else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton);
+      }
+      else {
+        let source = { uri: response.uri };
+
+        this.setState({
+          uploaded: true,
+          PicturePath: response.path
+        });
+
+        this.prev_state = this.message_state
+        this.message_state = 10
+        this.onImageSend("file://" + this.state.PicturePath)
+
+        var data = new FormData();
+        data.append('file', {
+          uri: "file://" + this.state.PicturePath, 
+          name: 'food.jpg', 
+          type: 'image/jpg' 
+        });
+
+        const config = {
+          method: "POST",
+          headers:{
+            'Accept': 'text/plain',
+            'Content-Type': 'multipart/form-data;'
+          },
+          body: data
+        }
+        this.onReceive('Processing request...\nThis may take a few minutes.')
+
+        fetch('http://ir-api.ironsout.com:8080/cgi-bin/upload/upload.cgi', config)
+          .then((responseData) => {
+            return responseData.text()
+          }).then((text) => { 
+            var result_list = text.split(" ")
+            // this.onReceive(result_list[5].split("\n")[0])
+            if (parseFloat(result_list[5].split("\n")[0]) < 0.5){
+              this.onReceive('Sorry I could not recognise that.') 
+              this.message_state = this.prev_state
+            }
+            else{
+              this.onReceive("It is " + result_list[1] + "\nContaining " + result_list[2] + " calories per " + result_list[3].slice(0, -1) + "\nHow many grams did you consume?")
+              this.calories = parseInt(result_list[2])
+              this.gram = parseInt(result_list[3].slice(0, -2))
+              this.message_state = 11
+            }
+          })
+          .catch(err => { 
+            this.onReceive('Invalid image. Try another one :)') 
+            this.message_state = this.prev_state
+          })
+      }
+    });
   }
 
   display(pos){
@@ -222,6 +299,24 @@ class HomeScreen extends React.Component {
           user: {
             _id: 2,
             name: 'React Native',
+            // avatar: 'https://facebook.github.io/react/img/logo_og.png',
+          },
+        }),
+      };
+    });
+  }
+
+  onImageSend(source){
+    this.setState((previousState) => {
+      return {
+        messages: GiftedChat.append(previousState.messages, {
+          _id: Math.round(Math.random() * 1000000),
+          text: '',
+          image: source,
+          createdAt: new Date(),
+          user: {
+            _id: 1,
+            name: 'Developer',
             // avatar: 'https://facebook.github.io/react/img/logo_og.png',
           },
         }),
@@ -260,7 +355,7 @@ class HomeScreen extends React.Component {
     }
     const options = {
       'Food consultant': (props) => {
-        this.props.navigation.navigate('Details');
+        this.handleClick();
       },
       'Cancel': () => {},
     };
@@ -364,86 +459,17 @@ var options = {
   }
 };
 
-class DetailsScreen extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      uploaded: false,
-      icon: require("./exps6086_HB133235C07_19_4b_WEB.jpg"),
-      PicturePath: "",
-      responseData: "",
-      responsed: false
-    };
-  }
-  handleClick = () => {
-    ImagePicker.showImagePicker(options, (response) => {
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      }
-      else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-      }
-      else if (response.customButton) {
-        console.log('User tapped custom button: ', response.customButton);
-      }
-      else {
-        let source = { uri: response.uri };
-        // You can also display the image using data:
-        // let source = { uri: 'data:image/jpeg;base64,' + response.data };
-
-        this.setState({
-          uploaded: true,
-          icon: source,
-          PicturePath: response.path
-        });
-
-        var data = new FormData();
-        data.append('picture', {
-          uri: "file://" + this.state.PicturePath, 
-          // uri: this.state.icon,
-          name: 'food.jpg', 
-          type: 'image/jpg'
-        });
-
-        const config = {
-          method: "POST",
-          headers:{
-            'Accept': 'application/json',
-            'Content-Type': 'multipart/form-data;'
-          },
-          body: data
-        }
-
-        fetch('http://ir-api.ironsout.com:8080/cgi-bin/upload/upload.cgi', config)
-          .then((responseData) => { 
-            this.setState({ 
-              ServerResponse: responseData,
-              responsed: true
-            }) 
-          })
-          .catch(err => { console.log(err) })
-      }
-    });
-  }
-
-
-  render() {
-    return (
-      <View>
-        <Button title='UPLOAD' onPress={this.handleClick} /> 
-        <Image source={this.state.icon} style={ this.state.uploaded ? {width: 300, height: 400} : {width: 300, height: 0}} />
-        <Text>{this.state.PicturePath}</Text>
-        <Text>{this.state.ServerResponse}</Text>
-      </View>
-    );
-  }  
-}
-//
-
 class FirstScreen extends React.Component{
+  handleClick = () => {
+    this.props.navigation.navigate('Home')
+  }
+
   render(){
     return(
-      <Text>First</Text>
+      <View>
+        <Text>First</Text>
+        <Button title='GO TO CHATBAT' onPress={this.handleClick} />
+      </View>
     )
   }
 }
@@ -452,9 +478,8 @@ class FirstScreen extends React.Component{
 export default createStackNavigator(
   {
     Home: HomeScreen,
-    Details: DetailsScreen,
     First: FirstScreen
   }, {
-    initialRouteName: 'Home'
+    initialRouteName: 'First'
   }
 );
