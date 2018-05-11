@@ -10,12 +10,10 @@ import {
   Image,
   YellowBox
 } from 'react-native';
-
 import {GiftedChat, Actions, Bubble, SystemMessage} from 'react-native-gifted-chat';
 import CustomActions from './CustomActions';
 import CustomView from './CustomView';
 import { createStackNavigator } from 'react-navigation';
-import AndroidWebView from './AndroidWebView'
 import ImagePicker from 'react-native-image-picker'
 
 YellowBox.ignoreWarnings(['Warning: isMounted(...) is deprecated', 'Module RCTImageLoader']);
@@ -65,8 +63,8 @@ class HomeScreen extends React.Component {
   }
 
   componentDidMount(){
-    if (this.target == null)
-      this.props.navigation.navigate('First')
+    // if (this.target == null)
+    //   this.props.navigation.navigate('First')
   }
 
   componentWillUnmount() {
@@ -109,7 +107,7 @@ class HomeScreen extends React.Component {
           if (!this.not_in(messages[0].text.toLowerCase().split(" "), choice_list.choices[key]))
             this.choice = key
         }
-
+        
         if (this.choice == null)
           this.onReceive('Sorry I do not understand :(');
 
@@ -118,14 +116,12 @@ class HomeScreen extends React.Component {
           this.message_state = 2          
         }
 
+
         else if (this.choice == "previous"){
-          if (this.prev_position.length >= 1){
-            this.position = this.prev_position[this.prev_position.length - 1] + 1
-            this.display(this.prev_position[this.prev_position.length - 1])
-            this.prev_position.splice(this.prev_position.length - 1, 1)
+          if (!(this.not_in(messages[0].text.toLowerCase().split(" "), choice_list.choices.pass))){
+            this.prev_position[this.prev_position.length] = this.position - 1;
+            this.message_state = 2
           }
-          else
-            this.onReceive('No previous search result.')
         }
 
         else if (this.choice == "cuisine"){
@@ -157,14 +153,14 @@ class HomeScreen extends React.Component {
         for (var i = this.position; i < openrice_data.length; i++) {
           if (this.district != openrice_data[i].district.toLowerCase())
             continue
-          if (this.maxprice <= parseFloat(openrice_data[i].price.slice(1)))
-            continue
           if (!this.not_in(this.blacklist_cuisine, openrice_data[i].cuisine))
             continue;
           if (openrice_data[i].mtr.includes("-"))
             if (this.distance <= parseInt(openrice_data[i].mtr.split("-")[0]))
               continue;
           if (!openrice_data[i].mtr.includes("-") && this.distance != 99)
+            continue;
+          if (this.maxprice <= openrice_data[i].price.slice(1))
             continue;
           break;
         }
@@ -187,7 +183,7 @@ class HomeScreen extends React.Component {
 
       this.setState((previousState) => {
         return {
-          typingText: null,
+          typingText: null
         };
       });
     }, 1000);
@@ -362,9 +358,6 @@ const styles = StyleSheet.create({
 
 var options = {
   title: 'Select Avatar',
-  customButtons: [
-    {name: 'fb', title: 'Choose Photo from Facebook'},
-  ],
   storageOptions: {
     skipBackup: true,
     path: 'images'
@@ -372,6 +365,16 @@ var options = {
 };
 
 class DetailsScreen extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      uploaded: false,
+      icon: require("./exps6086_HB133235C07_19_4b_WEB.jpg"),
+      PicturePath: "",
+      responseData: "",
+      responsed: false
+    };
+  }
   handleClick = () => {
     ImagePicker.showImagePicker(options, (response) => {
       if (response.didCancel) {
@@ -385,21 +388,52 @@ class DetailsScreen extends React.Component {
       }
       else {
         let source = { uri: response.uri };
-
         // You can also display the image using data:
         // let source = { uri: 'data:image/jpeg;base64,' + response.data };
 
         this.setState({
-          avatarSource: source
+          uploaded: true,
+          icon: source,
+          PicturePath: response.path
         });
+
+        var data = new FormData();
+        data.append('picture', {
+          uri: "file://" + this.state.PicturePath, 
+          // uri: this.state.icon,
+          name: 'food.jpg', 
+          type: 'image/jpg'
+        });
+
+        const config = {
+          method: "POST",
+          headers:{
+            'Accept': 'application/json',
+            'Content-Type': 'multipart/form-data;'
+          },
+          body: data
+        }
+
+        fetch('http://ir-api.ironsout.com:8080/cgi-bin/upload/upload.cgi', config)
+          .then((responseData) => { 
+            this.setState({ 
+              ServerResponse: responseData,
+              responsed: true
+            }) 
+          })
+          .catch(err => { console.log(err) })
       }
     });
   }
 
+
   render() {
     return (
       <View>
-        <Button title='UPLOAD' onPress={this.handleClick} />
+        <Button title='UPLOAD' onPress={this.handleClick} /> 
+        <Image source={this.state.icon} style={ this.state.uploaded ? {width: 300, height: 400} : {width: 300, height: 0}} />
+        <Text>{this.state.PicturePath}</Text>
+        <Text>{this.state.ServerResponse}</Text>
       </View>
     );
   }  
