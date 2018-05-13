@@ -205,6 +205,36 @@ class HomeScreen extends React.Component {
      }, 1000);
   }
 
+  reaskQuestion(){
+    setTimeout(() => {
+      switch(this.message_state) {
+        case state_get_district:
+          this.answerOutput('In which district you are looking for a resturant?')
+          break
+
+        case state_get_next_choice:
+          this.display(this.position-1)
+          break
+
+        case state_finish_choose:
+          this.answerOutput('Search Finished, please let me know if you want to restart the search! :)')
+          break
+
+        case state_choose_calories:
+          this.answerOutput("How many grams did you consume?")
+          break
+        case state_processing: //should not re-enter
+          this.answerOutput("I am working... Wait a sec...")
+          break
+        case state_set_calories:
+          this.answerOutput("Please input the Calorie Target:")
+          break
+        default:
+          this.answerOutput("Something went wrong!")
+          break
+      }
+    }, 1000);
+  }
   onSend(messages = []) {
     this.setState((previousState) => {
       return {
@@ -215,9 +245,11 @@ class HomeScreen extends React.Component {
     if(this.message_state != state_choose_calories && this.message_state != state_processing){
       if (nlp_input.has("(set|setup|make) (calorie|kcal|calories) target")){
         if (nlp_input.match('#Value').out('array').length > 0 ){
-          this.answerOutput("I helped you to set your Calorie Target to "+nlp_input.values().toNumber().out().toString()+" kcal")
+          this.answerOutput("I helped you to set your Calorie Target to"+nlp_input.values().toNumber().out().toString()+" kcal")
           AsyncStorage.setItem('target', nlp_input.values().toNumber().out().toString());
           global.target = nlp_input.values().toNumber().out().toString()
+          this.reaskQuestion()
+          return
         }
         else{
           this.prev_state = this.message_state
@@ -253,8 +285,8 @@ class HomeScreen extends React.Component {
           }
           else{
             this.answerOutput('I don\'t understand your district!')
-            break
           }
+          break
             
         case state_get_next_choice:
           if (nlp_input.has("(pass|not|know)")){
@@ -319,21 +351,29 @@ class HomeScreen extends React.Component {
               }
             this.fetchResult()
           }
+          else{
+            this.answerOutput("I am not quite understand what you said.")
+            this.reaskQuestion()
+          }
           break
 
         case state_finish_choose:
           if (nlp_input.has("(yes|ok|redo|re-do|go ahead|start|again)")){
             this.message_state = state_get_district
             this.initChoose()
-            this.answerOutput('In which district you are looking for a resturant?')
           }
+          this.reaskQuestion()
           break
 
         case state_choose_calories:
-          if (isNaN(parseInt(messages[0].text)))
-            this.answerOutput("How many grams did you consume?")
+          if (nlp_input.has("(no|wrong|not)")){
+            this.answerOutput("It's seems like a wrong guess from me. You can upload another photo at anytime!")
+            this.reaskQuestion()
+          }
+          else if (isNaN(parseInt(nlp_input.values().toNumber().out())))
+            this.answerOutput("Sorry I don\'t understand. Please re-enter the amount you consumed.")
           else{
-            this.answerOutput("You have consumed " + Math.round(parseInt(messages[0].text) / this.gram * this.calories) + " calories.")
+            this.answerOutput("You have consumed " + Math.round(parseInt(nlp_input.values().toNumber().out()) / this.gram * this.calories) + " calories.")
             //add to global
             if (global.date != (new Date()).getDate().toString()){
               global.date = (new Date()).getDate().toString()
@@ -343,6 +383,7 @@ class HomeScreen extends React.Component {
             AsyncStorage.setItem('consumed', global.consumed.toString());
             AsyncStorage.setItem('date', global.date);
             this.message_state = this.prev_state
+            this.reaskQuestion()
           }
           break
         case state_processing:
@@ -354,6 +395,7 @@ class HomeScreen extends React.Component {
             global.target = nlp_input.values().toNumber().out().toString()
             this.message_state = this.prev_state
             this.answerOutput("I helped you to set your Calorie Target to "+nlp_input.values().toNumber().out().toString()+" kcal")
+            this.reaskQuestion()
           }
           else{
             this.answerOutput("Please input the Calorie Target:")
@@ -512,7 +554,7 @@ class HomeScreen extends React.Component {
               this.message_state = this.prev_state
             }
             else{
-              this.answerOutput("It is " + result_list[1] + "\nContaining " + result_list[2] + " calories per " + result_list[3].slice(0, -1) + "\nHow many grams did you consume?")
+              this.answerOutput("It is " + result_list[1].replace("_"," ") + "\nContaining " + result_list[2] + " calories per " + result_list[3].replace ( /[^\d.]/g, '' )+" "+result_list[3].replace ( /[0-9.]/g, '' )+ "\nHow many "+result_list[3].replace ( /[0-9.]/g, '' )+" did you consume?")
               this.calories = parseInt(result_list[2])
               this.gram = parseInt(result_list[3].slice(0, -2))
               this.message_state = state_choose_calories
@@ -547,6 +589,9 @@ class HomeScreen extends React.Component {
             else{
               this.answerOutput("Cuisine keyword is: " + text);
             }
+          setTimeout(() => {
+            this.answerOutput('You can choose to accept or reject it! If you choose to reject, better let me know what\'s wrong with this restaurant!')
+          }, 1000);
         }, 1000);
       }, 1000);
     
