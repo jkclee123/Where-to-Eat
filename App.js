@@ -8,13 +8,16 @@ import {
   Dimensions,
   Button,
   Image,
-  YellowBox
+  YellowBox,
+  AsyncStorage,
+  TextInput
 } from 'react-native';
 import {GiftedChat, Actions, Bubble, SystemMessage} from 'react-native-gifted-chat';
 import CustomActions from './CustomActions';
 import CustomView from './CustomView';
 import { createStackNavigator } from 'react-navigation';
 import ImagePicker from 'react-native-image-picker'
+import * as Progress from 'react-native-progress';
 
 YellowBox.ignoreWarnings(['Warning: isMounted(...) is deprecated', 'Module RCTImageLoader']);
 
@@ -28,7 +31,6 @@ class HomeScreen extends React.Component {
     this.state = {
       messages: [],
       typingText: null,
-      target: null,
       PicturePath: ""
     };
 
@@ -58,7 +60,6 @@ class HomeScreen extends React.Component {
     this._isMounted = true;
     this.message_state = 1;
 
-    this.setState({ target: require('./data/messages.js') })
     this.setState(() => {
       return {
         messages: require('./data/messages.js')
@@ -89,6 +90,13 @@ class HomeScreen extends React.Component {
     }
 
     setTimeout(() => {
+      global.consumed = 5
+      global.date = "13"
+      this.onReceive(global.consumed.toString())
+      this.onReceive(global.date)
+      AsyncStorage.setItem('consumed', global.consumed.toString());
+      AsyncStorage.setItem('date', (new Date()).getDate().toString());  
+
       if (this.message_state == 1){
         for (var key in districts_list.districts){
           if (!this.not_in([messages[0].text.toLowerCase()], districts_list.districts[key])){
@@ -184,8 +192,15 @@ class HomeScreen extends React.Component {
         if (isNaN(parseInt(messages[0].text)))
           this.onReceive("How many grams did you consume?")
         else{
-          this.onReceive("You have consumed " + parseInt(messages[0].text) / this.gram * this.calories + " calories.")
+          this.onReceive("You have consumed " + Math.round(parseInt(messages[0].text) / this.gram * this.calories) + " calories.")
           this.message_state = this.prev_state
+          if (global.date != (new Date()).getDate().toString()){
+            global.date = new Date().getDate().toString()
+            global.consumed = 0
+          }
+          global.consumed += Math.round(parseInt(messages[0].text) / this.gram * this.calories);
+          AsyncStorage.setItem('consumed', global.consumed.toString());
+          AsyncStorage.setItem('date', (new Date()).getDate().toString());  
         }
       }
 
@@ -262,7 +277,7 @@ class HomeScreen extends React.Component {
               this.message_state = this.prev_state
             }
             else{
-              this.onReceive("It is " + result_list[1] + "\nContaining " + result_list[2] + " calories per " + result_list[3].slice(0, -1) + "\nHow many grams did you consume?")
+              this.onReceive("This is " + result_list[1] + "\nContaining " + result_list[2] + " calories per " + result_list[3].slice(0, -1) + "\nHow many grams did you consume?")
               this.calories = parseInt(result_list[2])
               this.gram = parseInt(result_list[3].slice(0, -2))
               this.message_state = 11
@@ -356,6 +371,9 @@ class HomeScreen extends React.Component {
     const options = {
       'Food consultant': (props) => {
         this.handleClick();
+      },
+      'Calorie Meter': (props) => {
+        this.props.navigation.navigate('First')
       },
       'Cancel': () => {},
     };
@@ -460,14 +478,66 @@ var options = {
 };
 
 class FirstScreen extends React.Component{
-  handleClick = () => {
-    this.props.navigation.navigate('Home')
+  state = {
+    progress: 0.3
+  }
+
+  componentWillMount(){
+    AsyncStorage.getItem("date").then((value) => {
+      if (value == null || (new Date()).getDate().toString() != value){
+        global.date = (new Date()).getDate().toString()
+        global.consumed = 0
+      }
+      else{
+        global.date = value
+        AsyncStorage.getItem("consumed").then((value) => {
+          if (value == null)
+            global.consumed = 0
+          else
+            global.consumed = value
+        }).done();
+      }
+    }).done();
+
+    AsyncStorage.getItem("target").then((value) => {
+      if (value == null)
+        global.target = 0
+      else{
+        global.target = value
+      }
+    }).done();
+    if (global.target != 0){
+      this.state.progress = global.consumed / global.target 
+      this.state.progress = 0.3
+    }
+    else
+      this.state.progress = 0.3
+      // this.state.progress = 0
+  }
+
+  handleInput = (text) => {
+    global.target = text
+    AsyncStorage.setItem('target', text);
+    if (global.target != 0)
+      this.state.progress = global.consumed / global.target 
+    else
+      this.state.progress = 0
   }
 
   render(){
     return(
       <View>
-        <Text>First</Text>
+        <TextInput
+          style={{height: 40, borderColor: 'gray', borderWidth: 1}}
+          onChangeText = { this.handleInput }
+          placeholder="Enter Your Calorie Target"
+        />
+
+        <Progress.Circle progress={this.state.progress} size={100} showsText={true} animated={true}/>
+        <Text>{global.consumed}</Text>
+        <Text>{global.target}</Text>
+        <Text>{global.date}</Text>
+        <Text>{this.state.progress}</Text>
         <Button title='GO TO CHATBAT' onPress={this.handleClick} />
       </View>
     )
@@ -480,6 +550,6 @@ export default createStackNavigator(
     Home: HomeScreen,
     First: FirstScreen
   }, {
-    initialRouteName: 'First'
+    initialRouteName: 'Home'
   }
 );
