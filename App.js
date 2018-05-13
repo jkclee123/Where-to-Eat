@@ -100,7 +100,7 @@ class HomeScreen extends React.Component {
       }
     }).done()
 
-    this.props.navigator.setTitle({title: 'WhereToEat'})
+    // this.props.navigator.setTitle({title: 'WhereToEat'})
 
     // AsyncStorage.setItem('date', global.date);
     // AsyncStorage.setItem('consumed', global.consumed.toString());
@@ -186,6 +186,8 @@ class HomeScreen extends React.Component {
       switch(this.message_state) {
         case state_get_district:
           nlp_input = nlp(messages[0].text.toLowerCase())
+          //this.answerOutput('In which district you are looking for a resturant?')
+
           for (let key in districts_list.districts){
             for (let k2 in districts_list.districts[key]){
               if (nlp_input.has(districts_list.districts[key][k2])){
@@ -207,10 +209,12 @@ class HomeScreen extends React.Component {
             this.message_state = state_get_next_choice
           }
           else{
-            this.answerOutput('Tell me the district you wanna search!')
+            this.answerOutput('I don\'t understand your district!')
             break
           }
-                  
+            
+        
+          
         case state_get_next_choice:
           nlp_input = nlp(messages[0].text.toLowerCase())
 
@@ -218,6 +222,7 @@ class HomeScreen extends React.Component {
             this.prev_position[this.prev_position.length] = this.position - 1;
             this.fetchResult()         
           }
+
 
           else if (nlp_input.has("(previous|last)")){
             if (!(this.not_in(messages[0].text.toLowerCase().split(" "), choice_list.choices.pass))){
@@ -233,10 +238,8 @@ class HomeScreen extends React.Component {
           }
 
           else if (nlp_input.has("(good|nice|yes)")){
-            this.onLocationReceive(this.position - 1)
-            this.answerOutput(openrice_data[this.position - 1].address)
-            this.answerOutput(openrice_data[this.position - 1].url)
-            this.message_state = 5
+            this.message_state = state_finish_choose
+            this.finishChoose()
           }
 
           //else if (this.choice == "price"){
@@ -254,24 +257,23 @@ class HomeScreen extends React.Component {
           }
           break
 
-          case state_choose_calories:
-            if (isNaN(parseInt(messages[0].text)))
-              this.answerOutput("How many grams did you consume?")
-            else{
-              this.answerOutput("You have consumed " + Math.round(parseInt(messages[0].text) / this.gram * this.calories) + " calories.")
-              this.message_state = this.prev_state
-              if (global.date == (new Date()).getDate().toString())
-                global.consumed += Math.round(parseInt(messages[0].text) / this.gram * this.calories)
-              else{
-                global.consumed = Math.round(parseInt(messages[0].text) / this.gram * this.calories)
-                global.date = (new Date()).getDate().toString()
-              }
-              global.progress = global.consumed / global.target
-              AsyncStorage.setItem('date', global.date);
-              AsyncStorage.setItem('consumed', global.consumed.toString())
-            }
-            break
+        case state_finish_choose:
+          nlp_input = nlp(messages[0].text.toLowerCase())
+          if (nlp_input.has("(yes|ok|redo|re-do|go ahead|start|again)")){
+            this.message_state = state_get_district
+            this.initChoose()
+            this.answerOutput('In which district you are looking for a resturant?')
+          }
+          break
 
+        case state_choose_calories:
+          if (isNaN(parseInt(messages[0].text)))
+            this.answerOutput("How many grams did you consume?")
+          else{
+            this.answerOutput("You have consumed " + parseInt(messages[0].text) / this.gram * this.calories + " calories.")
+            this.message_state = this.prev_state
+          }
+          break
         default:
           this.answerOutput("Something went wrong!")
           break
