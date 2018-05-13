@@ -8,15 +8,13 @@ import {
   Dimensions,
   Button,
   Image,
-  YellowBox,
-  AsyncStorage
+  YellowBox
 } from 'react-native';
 import {GiftedChat, Actions, Bubble, SystemMessage} from 'react-native-gifted-chat';
 import CustomActions from './CustomActions';
 import CustomView from './CustomView';
 import { createStackNavigator } from 'react-navigation';
 import ImagePicker from 'react-native-image-picker'
-import * as Progress from 'react-native-progress';
 
 YellowBox.ignoreWarnings(['Warning: isMounted(...) is deprecated', 'Module RCTImageLoader']);
 
@@ -24,8 +22,10 @@ const openrice_data = require('./openrice_data.json');
 const districts_list = require('./districts_list.json')
 const choice_list = require('./choice_list.json')
 const state_get_district = 1
-const state_fetch_result = 2
+//const state_fetch_result = 2 changed to method
 const state_get_next_choice = 3
+const state_finish_choose = 5
+const state_choose_calories = 11
 var nlp = require('compromise')
 
 class HomeScreen extends React.Component {
@@ -48,6 +48,13 @@ class HomeScreen extends React.Component {
     this.renderCustomView = this.renderCustomView.bind(this);
     this.onLocationReceive = this.onLocationReceive.bind(this);
     this.message_state = 0;
+    this.initChoose();
+    this.prev_state = 0;
+    this.calories = 0;
+    this.gram = 0;
+  }
+
+  initChoose(){
     this.position = 0;
     this.blacklist_cuisine = [];
     this.districts = [];
@@ -55,9 +62,6 @@ class HomeScreen extends React.Component {
     this.choice = "";
     this.maxprice = 801.5;
     this.distance = 99;
-    this.prev_state = 0;
-    this.calories = 0;
-    this.gram = 0;
   }
 
   componentWillMount() {
@@ -70,32 +74,6 @@ class HomeScreen extends React.Component {
         messages: require('./data/messages.js')
       };
     });
-
-    global.date = (new Date()).getDate().toString()
-    AsyncStorage.getItem("date").then((value) => {
-      if (value != global.date || value == null)
-        global.consumed = 0
-      else{
-        AsyncStorage.getItem("consumed").then((value) => {
-          global.consumed = parseInt(value)
-        }).done();
-      }
-    }).done()    
-    AsyncStorage.getItem("target").then((value) => {
-      if (value != null){
-        global.target = parseInt(value)
-        global.progress = parseFloat(global.consumed / global.target)
-        global.hasTarget = true
-      }
-      else{
-        global.target = 0
-        global.hasTarget = false
-      }
-    }).done()
-
-    // AsyncStorage.setItem('date', global.date);
-    // AsyncStorage.setItem('consumed', global.consumed.toString());
-    // AsyncStorage.setItem('target', global.target.toString());
   }
 
   componentWillUnmount() {
@@ -103,44 +81,67 @@ class HomeScreen extends React.Component {
   }
 
   fetchResult(){
-    for (var i = this.position; i < openrice_data.length; i++) {
-      let districts_flag = false
-      for (let d in this.districts){
-        if (this.districts[d] == openrice_data[i].district.toLowerCase())
-          districts_flag = true
-      }
-      if (!districts_flag)
-        continue
-      if (!this.not_in(this.blacklist_cuisine, openrice_data[i].cuisine))
-        continue;
-      if (openrice_data[i].mtr != null)
-        if (openrice_data[i].mtr.includes("-"))
-          if (this.distance <= parseInt(openrice_data[i].mtr.split("-")[0]))
-            continue;
-      if (openrice_data[i].mtr != null)
-        if (!openrice_data[i].mtr.includes("-") && this.distance != 99)
+    while (true){
+      for (var i = this.position; i < openrice_data.length; i++) {
+        let districts_flag = false
+        for (let d in this.districts){
+          if (this.districts[d] == openrice_data[i].district.toLowerCase())
+            districts_flag = true
+        }
+        if (!districts_flag)
+          continue
+        if (!this.not_in(this.blacklist_cuisine, openrice_data[i].cuisine))
           continue;
-      if (this.maxprice <= openrice_data[i].price.slice(1))
-        continue;
-      break
-    }
-    //restart state_fetch_result
-    if (i >= openrice_data.length){
-      this.message_state = state_fetch_result;
-      this.answerOutput("No resturant available :(\nRestarting search");
-      this.blacklist_cuisine = []
-      this.maxprice = 801.5
-      this.choice = ""
-      this.prev_position = []
-      this.position = 0
-      this.distance = 99
-    }
-    else{
-      this.position = i + 1;
-      this.display(i)
-      this.message_state = state_get_next_choice;
+        if (openrice_data[i].mtr != null)
+          if (openrice_data[i].mtr.includes("-"))
+            if (this.distance <= parseInt(openrice_data[i].mtr.split("-")[0]))
+              continue;
+        if (openrice_data[i].mtr != null)
+          if (!openrice_data[i].mtr.includes("-") && this.distance != 99)
+            continue;
+        if (this.maxprice <= openrice_data[i].price.slice(1))
+          continue;
+        break
+      }
+      //restart state_fetch_result
+      if (i >= openrice_data.length){
+        //setTimeout(() => {
+          this.message_state = state_get_next_choice;
+          this.answerOutput("No resturant available :(\nRestarting search");
+          this.blacklist_cuisine = []
+          this.maxprice = 801.5
+          this.choice = ""
+          this.prev_position = []
+          this.position = 0
+          this.distance = 99
+          this.showTyping()
+        //}, 3000);
+      }
+      else{
+        this.position = i + 1;
+        this.display(i)
+        this.message_state = state_get_next_choice;
+        break
+      }
     }
           
+  }
+
+  finishChoose(){
+    // display result
+    this.answerOutput('You have chosen the following resturant: ')
+      setTimeout(() => {
+        this.answerOutputImg(openrice_data[this.position-1].name, openrice_data[this.position-1].pic)
+        setTimeout(() => {
+          this.onLocationReceive(this.position - 1, openrice_data[this.position - 1].address)
+          setTimeout(() => {
+            this.answerOutput(openrice_data[this.position - 1].url)
+            setTimeout(() => {
+              this.answerOutput('Search Finished, please let me know if you want to restart the search! :)')
+            }, 1000);
+          }, 1000);
+        }, 1000);
+     }, 1000);
   }
 
   onSend(messages = []) {
@@ -154,6 +155,8 @@ class HomeScreen extends React.Component {
       switch(this.message_state) {
         case state_get_district:
           nlp_input = nlp(messages[0].text.toLowerCase())
+          //this.answerOutput('In which district you are looking for a resturant?')
+
           for (let key in districts_list.districts){
             for (let k2 in districts_list.districts[key]){
               if (nlp_input.has(districts_list.districts[key][k2])){
@@ -175,10 +178,12 @@ class HomeScreen extends React.Component {
             this.message_state = state_get_next_choice
           }
           else{
-            this.answerOutput('Tell me the district you wanna search!')
+            this.answerOutput('I don\'t understand your district!')
             break
           }
-                  
+            
+        
+          
         case state_get_next_choice:
           nlp_input = nlp(messages[0].text.toLowerCase())
 
@@ -186,6 +191,7 @@ class HomeScreen extends React.Component {
             this.prev_position[this.prev_position.length] = this.position - 1;
             this.fetchResult()         
           }
+
 
           else if (nlp_input.has("(previous|last)")){
             if (!(this.not_in(messages[0].text.toLowerCase().split(" "), choice_list.choices.pass))){
@@ -201,10 +207,8 @@ class HomeScreen extends React.Component {
           }
 
           else if (nlp_input.has("(good|nice|yes)")){
-            this.onLocationReceive(this.position - 1)
-            this.answerOutput(openrice_data[this.position - 1].address)
-            this.answerOutput(openrice_data[this.position - 1].url)
-            this.message_state = 5
+            this.message_state = state_finish_choose
+            this.finishChoose()
           }
 
           //else if (this.choice == "price"){
@@ -221,6 +225,24 @@ class HomeScreen extends React.Component {
             this.fetchResult()
           }
           break
+
+        case state_finish_choose:
+          nlp_input = nlp(messages[0].text.toLowerCase())
+          if (nlp_input.has("(yes|ok|redo|re-do|go ahead|start|again)")){
+            this.message_state = state_get_district
+            this.initChoose()
+            this.answerOutput('In which district you are looking for a resturant?')
+          }
+          break
+
+        case state_choose_calories:
+          if (isNaN(parseInt(messages[0].text)))
+            this.answerOutput("How many grams did you consume?")
+          else{
+            this.answerOutput("You have consumed " + parseInt(messages[0].text) / this.gram * this.calories + " calories.")
+            this.message_state = this.prev_state
+          }
+          break
         default:
           this.answerOutput("Something went wrong!")
           break
@@ -230,6 +252,14 @@ class HomeScreen extends React.Component {
       
     }
   }
+  showTyping(){
+    this.setState((previousState) => {
+      return {
+        typingText: 'React Native is typing...'
+      };
+    });
+  }
+    
   //For output Img
   answerOutputImg(output, source) {
       this.setState((previousState) => {
@@ -259,57 +289,6 @@ class HomeScreen extends React.Component {
 
     setTimeout(() => {
       this.onReceive(output)
-      this.setState((previousState) => {
-        return {
-          typingText: null
-        };
-      });
-    }, 1000);
-  }
-
-  answerDemo(messages) {
-    if (messages.length > 0) {
-      this.setState((previousState) => {
-        return {
-          typingText: 'React Native is typing...'
-        };
-      });
-    }
-
-    setTimeout(() => {
-      //check district until found
-      if (this.message_state == 1){
-        
-      }
-
-      //go to next choice
-      if (this.message_state == 3){
-        
-        
-      }
-
-      //do corresponding action
-      if (this.message_state == 2){
-        
-      }
-
-      // calculate calories
-      if (this.message_state == 11){
-        if (isNaN(parseInt(messages[0].text)))
-          this.answerOutput("How many grams did you consume?")
-        else{
-          this.answerOutput("You have consumed " + parseInt(messages[0].text) / this.gram * this.calories + " kcal.")
-          this.message_state = this.prev_state
-          if (global.date != (new Date()).getDate().toString()){
-            global.date = (new Date()).getDate().toString()
-            global.consumed = 0
-          }
-          global.consumed += Math.round(parseInt(messages[0].text) / this.gram * this.calories);
-          AsyncStorage.setItem('consumed', global.consumed.toString());
-          AsyncStorage.setItem('date', global.date); 
-        }
-      }
-
       this.setState((previousState) => {
         return {
           typingText: null
@@ -407,7 +386,6 @@ class HomeScreen extends React.Component {
     this.answerOutputImg(openrice_data[pos].name, openrice_data[pos].pic)
     setTimeout(() => {
       this.answerOutput('Is the resturant you are looking for called ' + openrice_data[pos].name + '?');
-      // this.onLocationReceive(pos)
       setTimeout(() => {
         this.answerOutput('You can get there by ' + openrice_data[pos].mtr);
         setTimeout(() => {
@@ -478,12 +456,12 @@ class HomeScreen extends React.Component {
     });
   }
 
-  onLocationReceive(pos){
+  onLocationReceive(pos, out){
     this.setState((previousState) => {
       return {
         messages: GiftedChat.append(previousState.messages, {
           _id: Math.round(Math.random() * 1000000),
-          text: '',
+          text: out,
           createdAt: new Date(),
           user: {
             _id: 2,
@@ -510,9 +488,6 @@ class HomeScreen extends React.Component {
     const options = {
       'Food consultant': (props) => {
         this.handleClick();
-      },
-      'Calorie Meter': (props) => {
-        this.props.navigation.navigate('First')
       },
       'Cancel': () => {},
     };
@@ -605,22 +580,6 @@ const styles = StyleSheet.create({
   footerText: {
     fontSize: 14,
     color: '#aaa',
-  },
-  firstText: {
-    fontFamily: 'Cochin',
-    fontSize: 20,
-    color: 'black'
-  },
-  firstView: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  noTargetText: {
-    fontFamily: 'Cochin',
-    fontSize: 15,
-    marginTop: 10
   }
 });
 
@@ -633,16 +592,16 @@ var options = {
 };
 
 class FirstScreen extends React.Component{
+  handleClick = () => {
+    this.props.navigation.navigate('Home')
+  }
 
   render(){
     return(
-      <View style={styles.firstView}>
-        <Text style={styles.firstText}>You have consumed {global.consumed.toString()} kcal today</Text>
-        {global.hasTarget ? <Text style={styles.firstText}>You can only consume {global.target.toString()} kcal daily</Text> : null}
-        { global.hasTarget ? null : <Text style={styles.noTargetText}>Set your calorie target!</Text> }
-        <Progress.Circle style={{marginTop: 50}} progress={global.progress} size={300} thickness={10} showsText={true} indeterminate={global.hasTarget ? false : true}/>
-      </View>        
-
+      <View>
+        <Text>First</Text>
+        <Button title='GO TO CHATBOT' onPress={this.handleClick} />
+      </View>
     )
   }
 }
@@ -653,6 +612,6 @@ export default createStackNavigator(
     Home: HomeScreen,
     First: FirstScreen
   }, {
-    initialRouteName: 'Home'
+    initialRouteName: 'First'
   }
 );
