@@ -8,13 +8,15 @@ import {
   Dimensions,
   Button,
   Image,
-  YellowBox
+  YellowBox,
+  AsyncStorage
 } from 'react-native';
 import {GiftedChat, Actions, Bubble, SystemMessage} from 'react-native-gifted-chat';
 import CustomActions from './CustomActions';
 import CustomView from './CustomView';
 import { createStackNavigator } from 'react-navigation';
 import ImagePicker from 'react-native-image-picker'
+import * as Progress from 'react-native-progress';
 
 YellowBox.ignoreWarnings(['Warning: isMounted(...) is deprecated', 'Module RCTImageLoader']);
 
@@ -68,6 +70,30 @@ class HomeScreen extends React.Component {
         messages: require('./data/messages.js')
       };
     });
+
+    global.date = (new Date()).getDate().toString()
+    AsyncStorage.getItem("date").then((value) => {
+      if (value != global.date || value == null)
+        global.consumed = 0
+      else{
+        AsyncStorage.getItem("consumed").then((value) => {
+          global.consumed = parseInt(value)
+        }).done();
+      }
+    }).done()    
+    AsyncStorage.getItem("target").then((value) => {
+      if (value != null)
+        global.target = parseInt(value)
+      else
+        global.target = 0
+    }).done()
+
+    // AsyncStorage.setItem('date', global.date);
+    // AsyncStorage.setItem('consumed', global.consumed.toString());
+    // AsyncStorage.setItem('target', global.target.toString());
+
+    if (global.target != 0)
+      global.progress = parseFloat(global.consumed / global.target)
   }
 
   componentWillUnmount() {
@@ -150,9 +176,7 @@ class HomeScreen extends React.Component {
             this.answerOutput('Tell me the district you wanna search!')
             break
           }
-            
-        
-          
+                  
         case state_get_next_choice:
           nlp_input = nlp(messages[0].text.toLowerCase())
 
@@ -160,7 +184,6 @@ class HomeScreen extends React.Component {
             this.prev_position[this.prev_position.length] = this.position - 1;
             this.fetchResult()         
           }
-
 
           else if (nlp_input.has("(previous|last)")){
             if (!(this.not_in(messages[0].text.toLowerCase().split(" "), choice_list.choices.pass))){
@@ -273,8 +296,15 @@ class HomeScreen extends React.Component {
         if (isNaN(parseInt(messages[0].text)))
           this.answerOutput("How many grams did you consume?")
         else{
-          this.answerOutput("You have consumed " + parseInt(messages[0].text) / this.gram * this.calories + " calories.")
+          this.answerOutput("You have consumed " + parseInt(messages[0].text) / this.gram * this.calories + " kcal.")
           this.message_state = this.prev_state
+          if (global.date != (new Date()).getDate().toString()){
+            global.date = (new Date()).getDate().toString()
+            global.consumed = 0
+          }
+          global.consumed += Math.round(parseInt(messages[0].text) / this.gram * this.calories);
+          AsyncStorage.setItem('consumed', global.consumed.toString());
+          AsyncStorage.setItem('date', global.date); 
         }
       }
 
@@ -479,6 +509,9 @@ class HomeScreen extends React.Component {
       'Food consultant': (props) => {
         this.handleClick();
       },
+      'Calorie Meter': (props) => {
+        this.props.navigation.navigate('First')
+      },
       'Cancel': () => {},
     };
     return (
@@ -570,6 +603,17 @@ const styles = StyleSheet.create({
   footerText: {
     fontSize: 14,
     color: '#aaa',
+  },
+  firstText: {
+    fontFamily: 'Cochin',
+    fontSize: 20,
+    color: 'black'
+  },
+  firstView: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 });
 
@@ -582,16 +626,15 @@ var options = {
 };
 
 class FirstScreen extends React.Component{
-  handleClick = () => {
-    this.props.navigation.navigate('Home')
-  }
 
   render(){
     return(
-      <View>
-        <Text>First</Text>
-        <Button title='GO TO CHATBAT' onPress={this.handleClick} />
-      </View>
+      <View style={styles.firstView}>
+        <Text style={styles.firstText}>You have consumed {global.consumed.toString()} kcal today</Text>
+        <Text style={styles.firstText}>You can only consume {global.target.toString()} kcal daily</Text>
+        <Progress.Circle style={{marginTop: 50}} progress={global.progress} size={350} thickness={10} showsText={true}/>
+      </View>        
+
     )
   }
 }
@@ -602,6 +645,6 @@ export default createStackNavigator(
     Home: HomeScreen,
     First: FirstScreen
   }, {
-    initialRouteName: 'First'
+    initialRouteName: 'Home'
   }
 );

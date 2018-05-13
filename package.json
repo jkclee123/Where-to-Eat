@@ -29,6 +29,7 @@
     "react-native-maps": "^0.21.0",
     "react-native-nav": "^2.0.2",
     "react-native-photo-upload": "^1.2.0",
+    "react-native-progress": "^3.4.0",
     "react-native-webview-android": "^1.1.15",
     "react-native-webview-file-upload-android": "^0.4.2",
     "react-navigation": "^2.0.0"
