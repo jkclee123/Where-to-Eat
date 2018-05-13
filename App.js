@@ -100,7 +100,7 @@ class HomeScreen extends React.Component {
       }
     }).done()
 
-    this.props.navigator.setTitle({title: 'WhereToEat'})
+    this.props.navigation.setTitle({title: 'WhereToEat'})
 
     // AsyncStorage.setItem('date', global.date);
     // AsyncStorage.setItem('consumed', global.consumed.toString());
