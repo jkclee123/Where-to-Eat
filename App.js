@@ -100,6 +100,8 @@ class HomeScreen extends React.Component {
       }
     }).done()
 
+    this.props.navigator.setTitle({title: 'WhereToEat'})
+
     // AsyncStorage.setItem('date', global.date);
     // AsyncStorage.setItem('consumed', global.consumed.toString());
     // AsyncStorage.setItem('target', global.target.toString());
@@ -121,13 +123,13 @@ class HomeScreen extends React.Component {
           continue
         if (!this.not_in(this.blacklist_cuisine, openrice_data[i].cuisine))
           continue;
-        if (openrice_data[i].mtr != null)
+        if (openrice_data[i].mtr != null){
           if (openrice_data[i].mtr.includes("-"))
             if (this.distance <= parseInt(openrice_data[i].mtr.split("-")[0]))
               continue;
-        if (openrice_data[i].mtr != null)
           if (!openrice_data[i].mtr.includes("-") && this.distance != 99)
             continue;
+        }
         if (this.maxprice <= openrice_data[i].price.slice(1))
           continue;
         break
@@ -256,8 +258,17 @@ class HomeScreen extends React.Component {
             if (isNaN(parseInt(messages[0].text)))
               this.answerOutput("How many grams did you consume?")
             else{
-              this.answerOutput("You have consumed " + parseInt(messages[0].text) / this.gram * this.calories + " calories.")
+              this.answerOutput("You have consumed " + Math.round(parseInt(messages[0].text) / this.gram * this.calories) + " calories.")
               this.message_state = this.prev_state
+              if (global.date == (new Date()).getDate().toString())
+                global.consumed += Math.round(parseInt(messages[0].text) / this.gram * this.calories)
+              else{
+                global.consumed = Math.round(parseInt(messages[0].text) / this.gram * this.calories)
+                global.date = (new Date()).getDate().toString()
+              }
+              global.progress = global.consumed / global.target
+              AsyncStorage.setItem('date', global.date);
+              AsyncStorage.setItem('consumed', global.consumed.toString())
             }
             break
 
