@@ -17,6 +17,7 @@ import CustomView from './CustomView';
 import { createStackNavigator } from 'react-navigation';
 import ImagePicker from 'react-native-image-picker'
 import * as Progress from 'react-native-progress';
+import geolib from 'geolib'
 
 YellowBox.ignoreWarnings(['Warning: isMounted(...) is deprecated', 'Module RCTImageLoader']);
 
@@ -40,7 +41,9 @@ class HomeScreen extends React.Component {
       messages: [],
       typingText: null,
       target: null,
-      PicturePath: ""
+      PicturePath: "",
+      lat: null,
+      lng: null
     };
 
     this._isMounted = false;
@@ -62,11 +65,13 @@ class HomeScreen extends React.Component {
   initChoose(){
     this.position = 0;
     this.blacklist_cuisine = [];
+    this.whitelist_cuisine = [];
     this.districts = [];
     this.prev_position = [];
     this.choice = "";
     this.maxprice = 801.5;
     this.distance = 99;
+    this.latlngdistance = 0;
   }
 
   componentWillMount() {
@@ -77,6 +82,20 @@ class HomeScreen extends React.Component {
       return {
         messages: require('./data/messages.js')
       };
+    });
+
+    navigator.geolocation.getCurrentPosition( (position) => {
+      this.setState({
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+        error: null,
+      });
+    },
+    (error) => this.setState({ error: error.message }),
+    { 
+      enableHighAccuracy: true, 
+      timeout: 60000000, 
+      maximumAge: 1000 
     });
 
     global.date = (new Date()).getDate().toString()
@@ -92,7 +111,6 @@ class HomeScreen extends React.Component {
     AsyncStorage.getItem("target").then((value) => {
       if (value != null){
         global.target = parseInt(value)
-        global.progress = parseFloat(global.consumed / global.target)
         global.hasTarget = true
       }
       else{
@@ -100,8 +118,6 @@ class HomeScreen extends React.Component {
         global.hasTarget = false
       }
     }).done()
-
-    // this.props.navigator.setTitle({title: 'WhereToEat'})
 
     // AsyncStorage.setItem('date', global.date);
     // AsyncStorage.setItem('consumed', global.consumed.toString());
@@ -120,9 +136,13 @@ class HomeScreen extends React.Component {
           if (this.districts[d] == openrice_data[i].district.toLowerCase())
             districts_flag = true
         }
+        if (this.whitelist_cuisine.length > 0){
+          if (!this.in(this.whitelist_cuisine, openrice_data[i].cuisine))
+            continue
+        }
         if (!districts_flag)
           continue
-        if (!this.not_in(this.blacklist_cuisine, openrice_data[i].cuisine))
+        if (this.in(this.blacklist_cuisine, openrice_data[i].cuisine))
           continue;
         if (openrice_data[i].mtr != null){
           if (openrice_data[i].mtr.includes("-"))
@@ -131,8 +151,17 @@ class HomeScreen extends React.Component {
           if (!openrice_data[i].mtr.includes("-") && this.distance != 99)
             continue;
         }
+        else{
+          if (this.distance != 99)
+            continue
+        }
         if (this.maxprice <= openrice_data[i].price.slice(1))
           continue;
+
+        if (this.state.lat != null && openrice_data[i].location != null && this.latlngdistance != 0){
+          if (geolib.getDistance( { latitude: this.state.lat, longitude: this.state.lng }, { latitude: openrice_data[i].location.latitude, longitude: openrice_data[i].location.longitude}) > this.latlngdistance)
+            continue
+        }
         break
       }
       //restart state_fetch_result
@@ -227,8 +256,6 @@ class HomeScreen extends React.Component {
             break
           }
             
-        
-          
         case state_get_next_choice:
           if (nlp_input.has("(pass|not|know)")){
             this.prev_position[this.prev_position.length] = this.position - 1;
@@ -237,15 +264,21 @@ class HomeScreen extends React.Component {
 
 
           else if (nlp_input.has("(previous|last)")){
-            if (!(this.not_in(messages[0].text.toLowerCase().split(" "), choice_list.choices.pass))){
+            if (this.in(messages[0].text.toLowerCase().split(" "), choice_list.choices.pass)){
               this.prev_position[this.prev_position.length] = this.position - 1;
               this.fetchResult()
             }
           }
 
-          else if (nlp_input.has("(cuisine|taste)")){
+          else if (nlp_input.has("dislike")){
             this.prev_position[this.prev_position.length] = this.position - 1;
-            this.blacklist_cuisine = this.blacklist_cuisine.concat(openrice_data[this.position - 1].cuisine)
+            this.blacklist_cuisine[this.blacklist_cuisine.length] = messages[0].text.toLowerCase().split("like")[1].split(" ")
+            this.fetchResult()
+          }
+
+          else if (nlp_input.has("like")){
+            this.prev_position[this.prev_position.length] = this.position - 1;
+            this.whitelist_cuisine[this.whitelist_cuisine.length] = messages[0].text.toLowerCase().split("like")[1].split(" ")
             this.fetchResult()
           }
 
@@ -254,7 +287,6 @@ class HomeScreen extends React.Component {
             this.finishChoose()
           }
 
-          //else if (this.choice == "price"){
           else if (nlp_input.has('(expensive|cost)')){
             this.answerOutput('I know it\'s expensive!')
             this.maxprice = parseFloat(openrice_data[this.position - 1].price.slice(1));
@@ -262,9 +294,29 @@ class HomeScreen extends React.Component {
           }
 
           else if (nlp_input.has("(far)")){
+            if (nlp_input.has("(mtr)")){
+              if (openrice_data[this.position - 1].mtr != null)
+                if (openrice_data[this.position - 1].mtr.includes("-")){
+                  this.distance = parseInt(openrice_data[this.position - 1].mtr.split("-")[0])
+                }
+            }
+            else{
+              if (this.state.lat != null && openrice_data[this.position - 1].location != null){
+                this.latlngdistance = geolib.getDistance(
+                    { latitude: this.state.lat, longitude: this.state.lng },
+                    { latitude: openrice_data[this.position - 1].location.latitude, longitude: openrice_data[this.position - 1].location.longitude}
+                  )
+                this.onReceive(this.latlngdistance)  
+              }
+            }
+            this.fetchResult()
+          }
+
+          else if (nlp_input.has("(near)")){
             if (openrice_data[this.position - 1].mtr != null)
-              if (openrice_data[this.position - 1].mtr.includes("-"))
-                this.distance = parseInt(openrice_data[this.position - 1].mtr.split("-")[0])
+              if (openrice_data[this.position - 1].mtr.includes("-")){
+                this.distance = parseInt(openrice_data[this.position - 1].mtr.split("-")[0]) + 3
+              }
             this.fetchResult()
           }
           break
@@ -313,9 +365,6 @@ class HomeScreen extends React.Component {
           this.answerOutput("Something went wrong!")
           break
       }
-      
-        
-      
     }
   }
   //For output Img
@@ -326,7 +375,6 @@ class HomeScreen extends React.Component {
         };
       });
     
-
     setTimeout(() => {
       this.onReceiveImg(output, source)
       this.setState((previousState) => {
@@ -399,14 +447,14 @@ class HomeScreen extends React.Component {
     }, 1000);
   }
 
-  not_in(sublist, list){
+  in(sublist, list){
     for (var i = 0; i < sublist.length; i++){
       for (var j = 0; j < list.length; j++){
-        if (sublist[i] == list[j])
-          return false;
+        if (sublist[i].toLowerCase() == list[j].toLowerCase())
+          return true;
       }
     }
-    return true;
+    return false;
   }
 
   handleClick(){
@@ -489,7 +537,8 @@ class HomeScreen extends React.Component {
     setTimeout(() => {
       this.answerOutput('Is the resturant you are looking for called ' + openrice_data[pos].name + '?');
       setTimeout(() => {
-        this.answerOutput('You can get there by ' + openrice_data[pos].mtr);
+        if (openrice_data[pos].mtr != null)
+          this.answerOutput('You can get there by ' + openrice_data[pos].mtr);
         setTimeout(() => {
           
             if (openrice_data[pos].cuisine.length > 1 ){
@@ -723,7 +772,7 @@ class FirstScreen extends React.Component{
         <Text style={styles.firstText}>You have consumed {global.consumed.toString()} kcal today</Text>
         {global.hasTarget ? <Text style={styles.firstText}>You can only consume {global.target.toString()} kcal daily</Text> : null}
         { global.hasTarget ? null : <Text style={styles.noTargetText}>Set your calorie target!</Text> }
-        <Progress.Circle style={{marginTop: 50}} progress={global.consumed/global.target} size={300} thickness={10} showsText={true} indeterminate={global.hasTarget ? false : true}/>
+        <Progress.Circle style={{marginTop: 50}} progress={global.consumed / global.target} size={300} thickness={10} showsText={true} indeterminate={global.hasTarget ? false : true}/>
       </View>  
     )
   }

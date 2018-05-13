@@ -13,6 +13,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> <!-- Include required permissions for Google Maps API to run. -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
@@ -47,7 +48,7 @@
             android:value="AIzaSyA5LG7Zq8rYs0Jsgf0RP87PJUGqKi-4yBw" />
 
         <provider
-            android:name="com.imagepicker.FileProvider"
+            android:name="android.support.v4.content.FileProvider"
             android:authorities="com.wheretoeat.provider"
             android:exported="false"
             android:grantUriPermissions="true" >
