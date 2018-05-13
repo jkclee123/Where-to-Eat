@@ -27,7 +27,9 @@ const state_get_district = 1
 //const state_fetch_result = 2 changed to method
 const state_get_next_choice = 3
 const state_finish_choose = 5
+const state_processing = 10
 const state_choose_calories = 11
+const state_set_calories = 12
 const option_state = 0
 var nlp = require('compromise')
 
@@ -71,7 +73,6 @@ class HomeScreen extends React.Component {
     this._isMounted = true;
     this.message_state = 1;
 
-    this.setState({ target: require('./data/messages.js') })
     this.setState(() => {
       return {
         messages: require('./data/messages.js')
@@ -181,11 +182,24 @@ class HomeScreen extends React.Component {
         messages: GiftedChat.append(previousState.messages, messages),
       };
     });
-
+    nlp_input = nlp(messages[0].text.toLowerCase())
+    if(this.message_state != state_choose_calories && this.message_state != state_processing){
+      if (nlp_input.has("(set|setup|make) (calorie|kcal|calories) target")){
+        if (nlp_input.match('#Value').out('array').length > 0 ){
+          this.answerOutput("I helped you to set your Calorie Target to "+nlp_input.values().toNumber().out().toString()+" kcal")
+          AsyncStorage.setItem('target', nlp_input.values().toNumber().out().toString());
+          global.target = nlp_input.values().toNumber().out().toString()
+        }
+        else{
+          this.prev_state = this.message_state
+          this.message_state = state_set_calories
+        }
+      }
+    }
+    
     if (messages.length > 0) {
       switch(this.message_state) {
         case state_get_district:
-          nlp_input = nlp(messages[0].text.toLowerCase())
           //this.answerOutput('In which district you are looking for a resturant?')
 
           for (let key in districts_list.districts){
@@ -216,8 +230,6 @@ class HomeScreen extends React.Component {
         
           
         case state_get_next_choice:
-          nlp_input = nlp(messages[0].text.toLowerCase())
-
           if (nlp_input.has("(pass|not|know)")){
             this.prev_position[this.prev_position.length] = this.position - 1;
             this.fetchResult()         
@@ -258,7 +270,6 @@ class HomeScreen extends React.Component {
           break
 
         case state_finish_choose:
-          nlp_input = nlp(messages[0].text.toLowerCase())
           if (nlp_input.has("(yes|ok|redo|re-do|go ahead|start|again)")){
             this.message_state = state_get_district
             this.initChoose()
@@ -270,9 +281,33 @@ class HomeScreen extends React.Component {
           if (isNaN(parseInt(messages[0].text)))
             this.answerOutput("How many grams did you consume?")
           else{
-            this.answerOutput("You have consumed " + parseInt(messages[0].text) / this.gram * this.calories + " calories.")
+            this.answerOutput("You have consumed " + Math.round(parseInt(messages[0].text) / this.gram * this.calories) + " calories.")
+            //add to global
+            if (global.date != (new Date()).getDate().toString()){
+              global.date = (new Date()).getDate().toString()
+              global.consumed = 0
+            }
+            global.consumed += Math.round(parseInt(messages[0].text) / this.gram * this.calories);
+            AsyncStorage.setItem('consumed', global.consumed.toString());
+            AsyncStorage.setItem('date', global.date);
             this.message_state = this.prev_state
           }
+          break
+        case state_processing:
+          this.answerOutput("I am working... Wait a sec...")
+          break
+        case state_set_calories:
+          if (nlp_input.match('#Value').out('array').length > 0 ){
+            AsyncStorage.setItem('target', nlp_input.values().toNumber().out().toString());
+            global.target = nlp_input.values().toNumber().out().toString()
+            this.message_state = this.prev_state
+            this.answerOutput("I helped you to set your Calorie Target to "+nlp_input.values().toNumber().out().toString()+" kcal")
+          }
+          else{
+            this.answerOutput("Please input the Calorie Target:")
+          }
+          
+          
           break
         default:
           this.answerOutput("Something went wrong!")
@@ -375,7 +410,7 @@ class HomeScreen extends React.Component {
   }
 
   handleClick(){
-    if (this.message_state == 10 || this.message_state == 11){
+    if (this.message_state == state_processing || this.message_state == state_choose_calories){
       this.answerOutput("Cannot choose image now.")
       return;
     }
@@ -398,7 +433,7 @@ class HomeScreen extends React.Component {
         });
 
         this.prev_state = this.message_state
-        this.message_state = 10
+        this.message_state = state_processing
         this.onImageSend("file://" + this.state.PicturePath)
 
         var data = new FormData();
@@ -432,7 +467,7 @@ class HomeScreen extends React.Component {
               this.answerOutput("It is " + result_list[1] + "\nContaining " + result_list[2] + " calories per " + result_list[3].slice(0, -1) + "\nHow many grams did you consume?")
               this.calories = parseInt(result_list[2])
               this.gram = parseInt(result_list[3].slice(0, -2))
-              this.message_state = 11
+              this.message_state = state_choose_calories
             }
           })
           .catch(err => { 
@@ -688,7 +723,7 @@ class FirstScreen extends React.Component{
         <Text style={styles.firstText}>You have consumed {global.consumed.toString()} kcal today</Text>
         {global.hasTarget ? <Text style={styles.firstText}>You can only consume {global.target.toString()} kcal daily</Text> : null}
         { global.hasTarget ? null : <Text style={styles.noTargetText}>Set your calorie target!</Text> }
-        <Progress.Circle style={{marginTop: 50}} progress={global.progress} size={300} thickness={10} showsText={true} indeterminate={global.hasTarget ? false : true}/>
+        <Progress.Circle style={{marginTop: 50}} progress={global.consumed/global.target} size={300} thickness={10} showsText={true} indeterminate={global.hasTarget ? false : true}/>
       </View>  
     )
   }
