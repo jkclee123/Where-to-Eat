@@ -82,18 +82,20 @@ class HomeScreen extends React.Component {
       }
     }).done()    
     AsyncStorage.getItem("target").then((value) => {
-      if (value != null)
+      if (value != null){
         global.target = parseInt(value)
-      else
+        global.progress = parseFloat(global.consumed / global.target)
+        global.hasTarget = true
+      }
+      else{
         global.target = 0
+        global.hasTarget = false
+      }
     }).done()
 
     // AsyncStorage.setItem('date', global.date);
     // AsyncStorage.setItem('consumed', global.consumed.toString());
     // AsyncStorage.setItem('target', global.target.toString());
-
-    if (global.target != 0)
-      global.progress = parseFloat(global.consumed / global.target)
   }
 
   componentWillUnmount() {
@@ -614,6 +616,11 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  noTargetText: {
+    fontFamily: 'Cochin',
+    fontSize: 15,
+    marginTop: 10
   }
 });
 
@@ -631,8 +638,9 @@ class FirstScreen extends React.Component{
     return(
       <View style={styles.firstView}>
         <Text style={styles.firstText}>You have consumed {global.consumed.toString()} kcal today</Text>
-        <Text style={styles.firstText}>You can only consume {global.target.toString()} kcal daily</Text>
-        <Progress.Circle style={{marginTop: 50}} progress={global.progress} size={350} thickness={10} showsText={true}/>
+        {global.hasTarget ? <Text style={styles.firstText}>You can only consume {global.target.toString()} kcal daily</Text> : null}
+        { global.hasTarget ? null : <Text style={styles.noTargetText}>Set your calorie target!</Text> }
+        <Progress.Circle style={{marginTop: 50}} progress={global.progress} size={300} thickness={10} showsText={true} indeterminate={global.hasTarget ? false : true}/>
       </View>        
 
     )
