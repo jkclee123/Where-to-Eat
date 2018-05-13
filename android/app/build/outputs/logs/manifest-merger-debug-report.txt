@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:1:1-35:12
-INJECTED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:1:1-35:12
-INJECTED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:1:1-35:12
-INJECTED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:1:1-35:12
+ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:1:1-36:12
+INJECTED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:1:1-36:12
+INJECTED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:1:1-36:12
+INJECTED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:1:1-36:12
 MERGED from [:react-native-fs] F:\AndroidStudioProjects\WhereToEat\node_modules\react-native-fs\android\build\intermediates\manifests\full\debug\AndroidManifest.xml:2:1-13:12
 MERGED from [:react-native-image-resizer] F:\AndroidStudioProjects\WhereToEat\node_modules\react-native-image-resizer\android\build\intermediates\manifests\full\debug\AndroidManifest.xml:2:1-11:12
 MERGED from [:react-native-image-picker] F:\AndroidStudioProjects\WhereToEat\node_modules\react-native-image-picker\android\build\intermediates\manifests\full\debug\AndroidManifest.xml:2:1-23:12
@@ -25,20 +25,20 @@ MERGED from [com.facebook.fresco:drawee:1.3.0] C:\Users\SiuBo\.gradle\caches\tra
 MERGED from [com.facebook.fresco:imagepipeline:1.3.0] C:\Users\SiuBo\.gradle\caches\transforms-1\files-1.1\imagepipeline-1.3.0.aar\8568c0683c93f3a1105e6df046ea1bde\AndroidManifest.xml:2:1-9:12
 MERGED from [com.facebook.fresco:imagepipeline-base:1.3.0] C:\Users\SiuBo\.gradle\caches\transforms-1\files-1.1\imagepipeline-base-1.3.0.aar\08a366bafbb7faaece1d7611a86c35b3\AndroidManifest.xml:2:1-9:12
 MERGED from [com.facebook.fresco:fbcore:1.3.0] C:\Users\SiuBo\.gradle\caches\transforms-1\files-1.1\fbcore-1.3.0.aar\8ac5ce46a5ea2066195827630e4144af\AndroidManifest.xml:2:1-9:12
-INJECTED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:1:1-35:12
-INJECTED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:1:1-35:12
-INJECTED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:1:1-35:12
+INJECTED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:1:1-36:12
+INJECTED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:1:1-36:12
+INJECTED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:1:1-36:12
 	package
 		ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:2:5-29
 		INJECTED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml
 		INJECTED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml
 	android:versionName
 		INJECTED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml
-		ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:1:1-35:12
+		ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:1:1-36:12
 		INJECTED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml
 	android:versionCode
 		INJECTED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml
-		ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:1:1-35:12
+		ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:1:1-36:12
 		INJECTED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml
 	xmlns:android
 		ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:1:11-69
@@ -67,11 +67,15 @@ MERGED from [:react-native-fs] F:\AndroidStudioProjects\WhereToEat\node_modules\
 	android:name
 		ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:7:22-78
 uses-permission#android.permission.READ_EXTERNAL_STORAGE
-ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:8:2-76
+ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:8:3-77
 	android:name
-		ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:8:19-74
+		ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:8:20-75
+uses-permission#android.permission.ACCESS_FINE_LOCATION
+ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:9:3-77
+	android:name
+		ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:9:20-74
 application
-ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:10:5-33:19
+ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:11:5-34:19
 MERGED from [:react-native-image-picker] F:\AndroidStudioProjects\WhereToEat\node_modules\react-native-image-picker\android\build\intermediates\manifests\full\debug\AndroidManifest.xml:11:5-21:19
 MERGED from [:react-native-image-picker] F:\AndroidStudioProjects\WhereToEat\node_modules\react-native-image-picker\android\build\intermediates\manifests\full\debug\AndroidManifest.xml:11:5-21:19
 MERGED from [com.facebook.react:react-native:0.55.3] C:\Users\SiuBo\.gradle\caches\transforms-1\files-1.1\react-native-0.55.3.aar\ae1170badf0f0682606d181182bba326\AndroidManifest.xml:13:5-20
@@ -95,45 +99,45 @@ MERGED from [org.webkit:android-jsc:r174650] C:\Users\SiuBo\.gradle\caches\trans
 MERGED from [com.google.maps.android:android-maps-utils:0.5] C:\Users\SiuBo\.gradle\caches\transforms-1\files-1.1\android-maps-utils-0.5.aar\9cf935689df864a77d63a2fdb1b47ee9\AndroidManifest.xml:7:5-11:19
 MERGED from [com.google.maps.android:android-maps-utils:0.5] C:\Users\SiuBo\.gradle\caches\transforms-1\files-1.1\android-maps-utils-0.5.aar\9cf935689df864a77d63a2fdb1b47ee9\AndroidManifest.xml:7:5-11:19
 	android:label
-		ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:12:7-39
+		ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:13:7-39
 	android:icon
-		ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:13:7-41
+		ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:14:7-41
 	android:allowBackup
-		ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:14:7-34
+		ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:15:7-34
 	android:theme
-		ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:15:7-38
+		ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:16:7-38
 	android:name
-		ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:11:7-38
+		ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:12:7-38
 activity#com.wheretoeat.MainActivity
-ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:16:7-25:18
+ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:17:7-26:18
 	android:label
-		ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:18:9-41
+		ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:19:9-41
 	android:windowSoftInputMode
-		ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:20:9-51
+		ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:21:9-51
 	android:configChanges
-		ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:19:9-79
+		ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:20:9-79
 	android:name
-		ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:17:9-37
+		ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:18:9-37
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:21:9-24:25
+ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:22:9-25:25
 action#android.intent.action.MAIN
-ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:22:13-65
+ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:23:13-65
 	android:name
-		ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:22:21-62
+		ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:23:21-62
 category#android.intent.category.LAUNCHER
-ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:23:13-73
+ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:24:13-73
 	android:name
-		ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:23:23-70
+		ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:24:23-70
 activity#com.facebook.react.devsupport.DevSettingsActivity
-ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:26:7-84
+ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:27:7-84
 	android:name
-		ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:26:17-81
+		ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:27:17-81
 meta-data#com.google.android.geo.API_KEY
-ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:28:7-31:9
+ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:29:7-32:9
 	android:value
-		ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:30:9-64
+		ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:31:9-64
 	android:name
-		ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:29:9-54
+		ADDED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:30:9-54
 uses-sdk
 INJECTED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml
@@ -237,4 +241,4 @@ MERGED from [com.google.maps.android:android-maps-utils:0.5] C:\Users\SiuBo\.gra
 	android:name
 		ADDED from [com.google.android.gms:play-services-basement:10.0.1] C:\Users\SiuBo\.gradle\caches\transforms-1\files-1.1\play-services-basement-10.0.1.aar\e7d080745aaf839c315c1ba1aedc026b\AndroidManifest.xml:20:20-65
 uses-permission#android.permission.READ_PHONE_STATE
-IMPLIED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:1:1-35:12 reason: org.webkit.android_jsc has a targetSdkVersion < 4
+IMPLIED from F:\AndroidStudioProjects\WhereToEat\android\app\src\main\AndroidManifest.xml:1:1-36:12 reason: org.webkit.android_jsc has a targetSdkVersion < 4
