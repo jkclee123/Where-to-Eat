@@ -84,19 +84,6 @@ class HomeScreen extends React.Component {
       };
     });
 
-    navigator.geolocation.getCurrentPosition( (position) => {
-      this.setState({
-        lat: position.coords.latitude,
-        lng: position.coords.longitude,
-        error: null,
-      });
-    },
-    (error) => this.setState({ error: error.message }),
-    { 
-      enableHighAccuracy: true, 
-      timeout: 60000000, 
-      maximumAge: 1000 
-    });
 
     global.date = (new Date()).getDate().toString()
     AsyncStorage.getItem("date").then((value) => {
@@ -127,57 +114,73 @@ class HomeScreen extends React.Component {
   }
 
   fetchResult(){
-    while (true){
-      for (var i = this.position; i < openrice_data.length; i++) {
-        let districts_flag = false
-        for (let d in this.districts){
-          if (this.districts[d] == openrice_data[i].district.toLowerCase())
-            districts_flag = true
-        }
-        if (this.whitelist_cuisine.length > 0){
-          if (!this.in(this.whitelist_cuisine, openrice_data[i].cuisine))
-            continue
-        }
-        if (!districts_flag)
-          continue
-        if (this.in(this.blacklist_cuisine, openrice_data[i].cuisine))
-          continue;
-        if (openrice_data[i].mtr != null){
-          if (openrice_data[i].mtr.includes("-"))
-            if (this.distance <= parseInt(openrice_data[i].mtr.split("-")[0]))
-              continue;
-          if (!openrice_data[i].mtr.includes("-") && this.distance != 99)
-            continue;
-        }
-        else{
-          if (this.distance != 99)
-            continue
-        }
-        if (this.maxprice <= openrice_data[i].price.slice(1))
-          continue;
 
-        if (this.state.lat != null && openrice_data[i].location != null && this.latlngdistance != 0){
-          if (geolib.getDistance( { latitude: this.state.lat, longitude: this.state.lng }, { latitude: openrice_data[i].location.latitude, longitude: openrice_data[i].location.longitude}) > this.latlngdistance)
-            continue
-        }
-        break
+    navigator.geolocation.getCurrentPosition( (position) => {
+      this.setState({
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+        error: null,
+      });
+    },
+    (error) => this.setState({ error: error.message }),
+    { 
+      enableHighAccuracy: true, 
+      timeout: 60000000, 
+      maximumAge: 1000 
+    });
+    for (var i = this.position; i < openrice_data.length; i++) {
+      let districts_flag = false
+      for (let d in this.districts){
+        if (this.districts[d] == openrice_data[i].district.toLowerCase())
+          districts_flag = true
       }
-      //restart state_fetch_result
-      if (i >= openrice_data.length){
-        //setTimeout(() => {
-          this.message_state = state_get_next_choice;
-          this.answerOutput("No resturant available :(\nRestarting search");
-          this.initChoose()
-          this.showTyping()
-        //}, 3000);
+      if (this.whitelist_cuisine.length > 0){
+        if (!this.in(this.whitelist_cuisine, openrice_data[i].cuisine))
+          continue
+      }
+      if (!districts_flag)
+        continue
+      if (this.in(this.blacklist_cuisine, openrice_data[i].cuisine))
+        continue;
+      if (openrice_data[i].mtr != null){
+        if (openrice_data[i].mtr.includes("-"))
+          if (this.distance <= parseInt(openrice_data[i].mtr.split("-")[0]))
+            continue;
+        if (!openrice_data[i].mtr.includes("-") && this.distance != 99)
+          continue;
       }
       else{
-        this.position = i + 1;
-        this.display(i)
-        this.message_state = state_get_next_choice;
-        break
+        if (this.distance != 99)
+          continue
       }
+      if (this.maxprice <= openrice_data[i].price.slice(1))
+        continue;
+
+      if (this.state.lat != null && openrice_data[i].location != null && this.latlngdistance != 0){
+        if (geolib.getDistance( { latitude: this.state.lat, longitude: this.state.lng }, { latitude: openrice_data[i].location.latitude, longitude: openrice_data[i].location.longitude}) > this.latlngdistance)
+          continue
+      }
+      break
     }
+    //restart state_fetch_result
+    if (i >= openrice_data.length){
+      this.answerOutput("No resturant available :(\nRestarting search");
+      setTimeout(() => {
+        this.message_state = state_get_district;
+        this.reaskQuestion()
+        
+        this.initChoose()
+        this.showTyping()
+      }, 1000);
+    }
+    else{
+      this.position = i + 1;
+      this.display(i)
+      this.message_state = state_get_next_choice;
+      
+    }
+
+    
           
   }
 
@@ -334,6 +337,20 @@ class HomeScreen extends React.Component {
           }
 
           else if (nlp_input.has("(far)")){
+
+    navigator.geolocation.getCurrentPosition( (position) => {
+      this.setState({
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+        error: null,
+      });
+    },
+    (error) => this.setState({ error: error.message }),
+    { 
+      enableHighAccuracy: true, 
+      timeout: 60000000, 
+      maximumAge: 1000 
+    });
             this.answerOutput("I agree that's a bit far!")
             if (nlp_input.has("(mtr)")){
               if (openrice_data[this.position - 1].mtr != null)
