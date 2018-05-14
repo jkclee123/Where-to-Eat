@@ -119,9 +119,7 @@ class HomeScreen extends React.Component {
       }
     }).done()
 
-    // AsyncStorage.setItem('date', global.date);
-    // AsyncStorage.setItem('consumed', global.consumed.toString());
-    // AsyncStorage.setItem('target', global.target.toString());
+    this.initChoose();
   }
 
   componentWillUnmount() {
@@ -169,12 +167,7 @@ class HomeScreen extends React.Component {
         //setTimeout(() => {
           this.message_state = state_get_next_choice;
           this.answerOutput("No resturant available :(\nRestarting search");
-          this.blacklist_cuisine = []
-          this.maxprice = 801.5
-          this.choice = ""
-          this.prev_position = []
-          this.position = 0
-          this.distance = 99
+          this.initChoose()
           this.showTyping()
         //}, 3000);
       }
@@ -198,8 +191,17 @@ class HomeScreen extends React.Component {
           setTimeout(() => {
             this.answerOutput(openrice_data[this.position - 1].url)
             setTimeout(() => {
-              this.answerOutput('Search Finished, please let me know if you want to restart the search! :)')
-            }, 1000);
+              let quota = global.target - global.consumed
+              if (quota < 0)
+                quota = 0
+              if (global.consumed / global.target > 0.5)
+                this.answerOutput('You have intake quota of ' + quota + " kcal\nMind your diet!")
+              else
+                this.answerOutput('You have intake quota of ' + quota + " kcal\nFeel free to eat!")
+              setTimeout(() => {
+                this.answerOutput('Search Finished, please let me know if you want to restart the search! :)')
+              }, 1000);
+            }, 1000); 
           }, 1000);
         }, 1000);
      }, 1000);
@@ -245,9 +247,11 @@ class HomeScreen extends React.Component {
     if(this.message_state != state_choose_calories && this.message_state != state_processing){
       if (nlp_input.has("(set|setup|make) (calorie|kcal|calories) target")){
         if (nlp_input.match('#Value').out('array').length > 0 ){
-          this.answerOutput("I helped you to set your Calorie Target to"+nlp_input.values().toNumber().out().toString()+" kcal")
+          this.answerOutput("I set your Calorie Target to" + nlp_input.values().toNumber().out().toString()+" kcal\nLet's stay healthy together :)")
           AsyncStorage.setItem('target', nlp_input.values().toNumber().out().toString());
           global.target = nlp_input.values().toNumber().out().toString()
+          if (global.target != 0)
+            global.hasTarget = true
           this.reaskQuestion()
           return
         }
@@ -304,17 +308,21 @@ class HomeScreen extends React.Component {
 
           else if (nlp_input.has("dislike")){
             this.prev_position[this.prev_position.length] = this.position - 1;
-            this.blacklist_cuisine[this.blacklist_cuisine.length] = messages[0].text.toLowerCase().split("like")[1].split(" ")
+            this.blacklist_cuisine[this.blacklist_cuisine.length] = messages[0].text.toLowerCase().split("dislike")[1].slice(1)
+            this.answerOutput("I dislike " + messages[0].text.toLowerCase().split("dislike")[1].slice(1) + " too!")
             this.fetchResult()
           }
 
           else if (nlp_input.has("like")){
             this.prev_position[this.prev_position.length] = this.position - 1;
-            this.whitelist_cuisine[this.whitelist_cuisine.length] = messages[0].text.toLowerCase().split("like")[1].split(" ")
+            this.whitelist_cuisine[this.whitelist_cuisine.length] = messages[0].text.toLowerCase().split("like")[1].slice(1)
+            this.answerOutput("I like " + messages[0].text.toLowerCase().split("like")[1].slice(1) + " too!")
+            this.onReceive(this.whitelist_cuisine)
             this.fetchResult()
           }
 
           else if (nlp_input.has("(good|nice|yes)")){
+            this.answerOutput('Smart choice!')
             this.message_state = state_finish_choose
             this.finishChoose()
           }
@@ -326,6 +334,7 @@ class HomeScreen extends React.Component {
           }
 
           else if (nlp_input.has("(far)")){
+            this.answerOutput("I agree that's a bit far!")
             if (nlp_input.has("(mtr)")){
               if (openrice_data[this.position - 1].mtr != null)
                 if (openrice_data[this.position - 1].mtr.includes("-")){
@@ -379,6 +388,15 @@ class HomeScreen extends React.Component {
               global.consumed = 0
             }
             global.consumed += Math.round(parseInt(messages[0].text) / this.gram * this.calories);
+            
+            let quota = global.target - global.consumed
+            if (quota < 0)
+              quota = 0
+            if (global.consumed / global.target > 0.5)
+              this.answerOutput('You have intake quota of ' + quota + " kcal\nMind your diet!")
+            else
+              this.answerOutput('You have intake quota of ' + quota + " kcal\nFeel free to eat!")
+            
             AsyncStorage.setItem('consumed', global.consumed.toString());
             AsyncStorage.setItem('date', global.date);
             this.message_state = this.prev_state
@@ -392,6 +410,8 @@ class HomeScreen extends React.Component {
           if (nlp_input.match('#Value').out('array').length > 0 ){
             AsyncStorage.setItem('target', nlp_input.values().toNumber().out().toString());
             global.target = nlp_input.values().toNumber().out().toString()
+            if (global.target != 0)
+              global.hasTarget = true
             this.message_state = this.prev_state
             this.answerOutput("I helped you to set your Calorie Target to "+nlp_input.values().toNumber().out().toString()+" kcal")
             this.reaskQuestion()
