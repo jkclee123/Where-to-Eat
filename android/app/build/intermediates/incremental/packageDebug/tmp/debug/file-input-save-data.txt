@@ -1,5 +1,5 @@
 #Internal package file, do not edit.
-#Mon May 14 15:20:27 CST 2018
+#Tue May 15 01:32:00 CST 2018
 17.baseType=DIRECTORY
 4.path=lib/x86/libgnustl_shared.so
 25.base=F\:\\AndroidStudioProjects\\WhereToEat\\android\\app\\build\\intermediates\\transforms\\mergeJniLibs\\debug\\0

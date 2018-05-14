@@ -5,7 +5,7 @@ module.exports = [
     createdAt: new Date(),
     user: {
       _id: 2,
-      name: 'React Native',
+      name: 'RChat Bot',
     },
     sent: true,
     received: true,
@@ -20,7 +20,7 @@ module.exports = [
     createdAt: new Date(),
     user: {
       _id: 2,
-      name: 'React Native',
+      name: 'Chat Bot',
     },
     sent: true,
     received: true,
@@ -35,7 +35,7 @@ module.exports = [
     createdAt: new Date(),
     user: {
       _id: 2,
-      name: 'React Native',
+      name: 'Chat Bot',
     },
     sent: true,
     received: true,

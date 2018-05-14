@@ -17,13 +17,14 @@ import CustomView from './CustomView';
 import { createStackNavigator } from 'react-navigation';
 import ImagePicker from 'react-native-image-picker'
 import * as Progress from 'react-native-progress';
-import geolib from 'geolib'
+import geolib from 'geolib';
 
 YellowBox.ignoreWarnings(['Warning: isMounted(...) is deprecated', 'Module RCTImageLoader']);
 
 const openrice_data = require('./openrice_data.json');
 const districts_list = require('./districts_list.json')
 const choice_list = require('./choice_list.json')
+const av = require('./exps6086_HB133235C07_19_4b_WEB.jpg')
 const state_get_district = 1
 //const state_fetch_result = 2 changed to method
 const state_get_next_choice = 3
@@ -56,7 +57,6 @@ class HomeScreen extends React.Component {
     this.renderCustomView = this.renderCustomView.bind(this);
     this.onLocationReceive = this.onLocationReceive.bind(this);
     this.message_state = 0;
-    this.initChoose();
     this.prev_state = 0;
     this.calories = 0;
     this.gram = 0;
@@ -82,20 +82,6 @@ class HomeScreen extends React.Component {
       return {
         messages: require('./data/messages.js')
       };
-    });
-
-    navigator.geolocation.getCurrentPosition( (position) => {
-      this.setState({
-        lat: position.coords.latitude,
-        lng: position.coords.longitude,
-        error: null,
-      });
-    },
-    (error) => this.setState({ error: error.message }),
-    { 
-      enableHighAccuracy: true, 
-      timeout: 60000000, 
-      maximumAge: 1000 
     });
 
     global.date = (new Date()).getDate().toString()
@@ -126,59 +112,81 @@ class HomeScreen extends React.Component {
     this._isMounted = false;
   }
 
-  fetchResult(){
-    while (true){
-      for (var i = this.position; i < openrice_data.length; i++) {
-        let districts_flag = false
-        for (let d in this.districts){
-          if (this.districts[d] == openrice_data[i].district.toLowerCase())
-            districts_flag = true
-        }
-        if (this.whitelist_cuisine.length > 0){
-          if (!this.in(this.whitelist_cuisine, openrice_data[i].cuisine))
-            continue
-        }
-        if (!districts_flag)
-          continue
-        if (this.in(this.blacklist_cuisine, openrice_data[i].cuisine))
-          continue;
-        if (openrice_data[i].mtr != null){
-          if (openrice_data[i].mtr.includes("-"))
-            if (this.distance <= parseInt(openrice_data[i].mtr.split("-")[0]))
-              continue;
-          if (!openrice_data[i].mtr.includes("-") && this.distance != 99)
-            continue;
-        }
-        else{
-          if (this.distance != 99)
-            continue
-        }
-        if (this.maxprice <= openrice_data[i].price.slice(1))
-          continue;
+  componentDidmount(){
+    this.props.navigation.setParams({ title: 'your content' })
+  }
 
-        if (this.state.lat != null && openrice_data[i].location != null && this.latlngdistance != 0){
-          if (geolib.getDistance( { latitude: this.state.lat, longitude: this.state.lng }, { latitude: openrice_data[i].location.latitude, longitude: openrice_data[i].location.longitude}) > this.latlngdistance)
-            continue
-        }
-        break
+  static navigationOptions = ({ navigation }) => ({
+    title: 'WhereToEat ChatBot',
+    headerStyle: { backgroundColor: '#FFF' },
+  }); 
+
+  fetchResult(){
+
+    navigator.geolocation.getCurrentPosition( (position) => {
+      this.setState({
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+        error: null,
+      });
+    },
+    (error) => this.setState({ error: error.message }),
+    { 
+      enableHighAccuracy: true, 
+      timeout: 60000000, 
+      maximumAge: 1000 
+    });
+    for (var i = this.position; i < openrice_data.length; i++) {
+      let districts_flag = false
+      for (let d in this.districts){
+        if (this.districts[d] == openrice_data[i].district.toLowerCase())
+          districts_flag = true
       }
-      //restart state_fetch_result
-      if (i >= openrice_data.length){
-        //setTimeout(() => {
-          this.message_state = state_get_next_choice;
-          this.answerOutput("No resturant available :(\nRestarting search");
-          this.initChoose()
-          this.showTyping()
-        //}, 3000);
+      if (this.whitelist_cuisine.length > 0){
+        if (!this.in(this.whitelist_cuisine, openrice_data[i].cuisine))
+          continue
+      }
+      if (!districts_flag)
+        continue
+      if (this.in(this.blacklist_cuisine, openrice_data[i].cuisine))
+        continue;
+      if (openrice_data[i].mtr != null){
+        if (openrice_data[i].mtr.includes("-"))
+          if (this.distance <= parseInt(openrice_data[i].mtr.split("-")[0]))
+            continue;
+        if (!openrice_data[i].mtr.includes("-") && this.distance != 99)
+          continue;
       }
       else{
-        this.position = i + 1;
-        this.display(i)
-        this.message_state = state_get_next_choice;
-        break
+        if (this.distance != 99)
+          continue
       }
+      if (this.maxprice <= openrice_data[i].price.slice(1))
+        continue;
+
+      if (this.state.lat != null && openrice_data[i].location != null && this.latlngdistance != 0){
+        if (geolib.getDistance( { latitude: this.state.lat, longitude: this.state.lng }, { latitude: openrice_data[i].location.latitude, longitude: openrice_data[i].location.longitude}) > this.latlngdistance)
+          continue
+      }
+      break
     }
-          
+    //restart state_fetch_result
+    if (i >= openrice_data.length){
+      this.answerOutput("No resturant available :(\nRestarting search");
+      setTimeout(() => {
+        this.message_state = state_get_district;
+        this.reaskQuestion()
+        
+        this.initChoose()
+        this.showTyping()
+      }, 1000);
+    }
+    else{
+      this.position = i + 1;
+      this.display(i)
+      this.message_state = state_get_next_choice;
+      
+    }      
   }
 
   finishChoose(){
@@ -334,6 +342,20 @@ class HomeScreen extends React.Component {
           }
 
           else if (nlp_input.has("(far)")){
+
+    navigator.geolocation.getCurrentPosition( (position) => {
+      this.setState({
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+        error: null,
+      });
+    },
+    (error) => this.setState({ error: error.message }),
+    { 
+      enableHighAccuracy: true, 
+      timeout: 60000000, 
+      maximumAge: 1000 
+    });
             this.answerOutput("I agree that's a bit far!")
             if (nlp_input.has("(mtr)")){
               if (openrice_data[this.position - 1].mtr != null)
@@ -432,7 +454,7 @@ class HomeScreen extends React.Component {
   answerOutputImg(output, source) {
       this.setState((previousState) => {
         return {
-          typingText: 'React Native is typing...'
+          typingText: 'ChatBot is typing...'
         };
       });
     
@@ -449,7 +471,7 @@ class HomeScreen extends React.Component {
   answerOutput(output) {
       this.setState((previousState) => {
         return {
-          typingText: 'React Native is typing...'
+          typingText: 'ChatBot is typing...'
         };
       });
     
@@ -467,7 +489,7 @@ class HomeScreen extends React.Component {
   showTyping(){
     this.setState((previousState) => {
       return {
-        typingText: 'React Native is typing...'
+        typingText: 'Chat Bot is typing...'
       };
     });
   }
@@ -476,7 +498,7 @@ class HomeScreen extends React.Component {
   answerOutputImg(output, source) {
       this.setState((previousState) => {
         return {
-          typingText: 'React Native is typing...'
+          typingText: 'Chat Bot is typing...'
         };
       });
 
@@ -494,7 +516,7 @@ class HomeScreen extends React.Component {
   answerOutput(output) {
       this.setState((previousState) => {
         return {
-          typingText: 'React Native is typing...'
+          typingText: 'Chat Bot is typing...'
         };
       });
 
@@ -626,8 +648,8 @@ class HomeScreen extends React.Component {
           createdAt: new Date(),
           user: {
             _id: 2,
-            name: 'React Native',
-            // avatar: 'https://facebook.github.io/react/img/logo_og.png',
+            name: 'Chat Bot',
+            // avatar: av,
           },
         }),
       };
@@ -643,7 +665,7 @@ class HomeScreen extends React.Component {
           createdAt: new Date(),
           user: {
             _id: 2,
-            name: 'React Native',
+            name: 'Chat Bot',
             // avatar: 'https://facebook.github.io/react/img/logo_og.png',
           },
         }),
@@ -677,7 +699,7 @@ class HomeScreen extends React.Component {
           createdAt: new Date(),
           user: {
             _id: 2,
-            name: 'React Native',
+            name: 'Chat Bot',
             // avatar: 'https://facebook.github.io/react/img/logo_og.png',
           },
           location: {
@@ -829,6 +851,10 @@ var options = {
 };
 
 class FirstScreen extends React.Component{
+  static navigationOptions = ({ navigation }) => ({
+    title: 'ChatBot',
+    headerStyle: { backgroundColor: '#FFF' },
+  }); 
 
   render(){
     return(
@@ -849,5 +875,9 @@ export default createStackNavigator(
     First: FirstScreen
   }, {
     initialRouteName: 'Home'
+  }, {
+    navigationOptions: {
+      headerTintColor: '#000'
+    }
   }
 );
