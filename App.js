@@ -9,7 +9,8 @@ import {
   Button,
   Image,
   YellowBox,
-  AsyncStorage
+  AsyncStorage,
+  ListView
 } from 'react-native';
 import {GiftedChat, Actions, Bubble, SystemMessage} from 'react-native-gifted-chat';
 import CustomActions from './CustomActions';
@@ -60,6 +61,11 @@ class HomeScreen extends React.Component {
     this.prev_state = 0;
     this.calories = 0;
     this.gram = 0;
+    this.foodamount = 0;
+    this.foodname = "";
+    this.foodunit = "";
+    this.foodtime = null;
+
   }
 
   initChoose(){
@@ -116,6 +122,17 @@ class HomeScreen extends React.Component {
       else{
         global.target = 0
         global.hasTarget = false
+      }
+    }).done()
+
+    AsyncStorage.getItem("foodlist").then((value) => {
+      if (value != null){
+        global.foodlist = JSON.parse(value)
+        global.hasFoodlist = true
+      }
+      else{
+        global.foodlist = []
+        global.hasFoodlist = false
       }
     }).done()
 
@@ -396,7 +413,9 @@ class HomeScreen extends React.Component {
               global.consumed = 0
             }
             global.consumed += Math.round(parseInt(messages[0].text) / this.gram * this.calories);
-            
+
+            this.foodamount = parseInt(nlp_input.values().toNumber().out())
+
             let quota = global.target - global.consumed
             if (quota < 0)
               quota = 0
@@ -408,6 +427,9 @@ class HomeScreen extends React.Component {
             AsyncStorage.setItem('consumed', global.consumed.toString());
             AsyncStorage.setItem('date', global.date);
             this.message_state = this.prev_state
+
+            global.foodlist.push({"name": this.foodname, "calorieper1": this.calories, "unit":this.foodunit, "amount":this.foodamount, "totalcal": Math.round(parseInt(messages[0].text) / this.gram * this.calories)})
+            AsyncStorage.setItem('foodlist', JSON.stringify(global.foodlist));
             this.reaskQuestion()
           }
           break
@@ -579,17 +601,22 @@ class HomeScreen extends React.Component {
             if (parseFloat(result_list[5].split("\n")[0]) < 0.5){
               this.answerOutput('Sorry I could not recognise that.') 
               this.message_state = this.prev_state
+              this.reaskQuestion()
             }
             else{
               this.answerOutput("It is " + result_list[1].replace("_"," ") + "\nContaining " + result_list[2] + " calories per " + result_list[3].replace ( /[^\d.]/g, '' )+" "+result_list[3].replace ( /[0-9.]/g, '' )+ "\nHow many "+result_list[3].replace ( /[0-9.]/g, '' )+" did you consume?")
               this.calories = parseInt(result_list[2])
               this.gram = parseInt(result_list[3].slice(0, -2))
               this.message_state = state_choose_calories
+              this.foodunit = result_list[3].replace ( /[0-9.]/g, '' )
+              this.foodname = result_list[1].replace("_"," ")
+              this.foodtime = (new Date()).getDate().toString()
             }
           })
           .catch(err => { 
             this.answerOutput('Invalid image. Try another one :)') 
             this.message_state = this.prev_state
+            this.reaskQuestion()
           })
       }
     });
@@ -841,6 +868,11 @@ class FirstScreen extends React.Component{
     title: 'ChatBot',
     headerStyle: { backgroundColor: '#FFF' },
   }); 
+  constructor() {
+    super();
+    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+
+  }
 
   render(){
     return(
@@ -849,6 +881,8 @@ class FirstScreen extends React.Component{
         {global.hasTarget ? <Text style={styles.firstText}>You can only consume {global.target.toString()} kcal daily</Text> : null}
         { global.hasTarget ? null : <Text style={styles.noTargetText}>Set your calorie target!</Text> }
         <Progress.Circle style={{marginTop: 50}} progress={global.consumed / global.target} size={300} thickness={10} showsText={true} indeterminate={global.hasTarget ? false : true}/>
+
+        <Text style={styles.firstText}>You have consumed {JSON.stringify(global.foodlist)}</Text>
       </View>  
     )
   }
