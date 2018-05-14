@@ -1,9 +1,4 @@
-<<<<<<< HEAD
-#Tue May 15 01:32:00 CST 2018
+#Tue May 15 01:54:24 CST 2018
 base.0=F\:\\AndroidStudioProjects\\WhereToEat\\android\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\0
-=======
-#Tue May 15 01:12:33 HKT 2018
-base.0=/Users/Edmund/Desktop/CUHK/csci4140/WhereToEat/android/app/build/intermediates/transforms/dexMerger/debug/0
->>>>>>> e921fede0a0015cde8de21217830eeb158df2fb8
 path.0=classes.dex
 renamed.0=classes.dex

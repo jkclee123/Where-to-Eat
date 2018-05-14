@@ -5,7 +5,7 @@ module.exports = [
     createdAt: new Date(),
     user: {
       _id: 2,
-      name: 'RChat Bot',
+      name: 'Chat Bot',
     },
     sent: true,
     received: true,
