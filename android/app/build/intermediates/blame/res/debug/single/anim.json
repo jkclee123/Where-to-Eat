@@ -1,66 +1,66 @@
 [
     {
-        "merged": "/Users/Edmund/Desktop/CUHK/csci4140/WhereToEat/android/app/build/intermediates/res/merged/debug/anim/catalyst_slide_down.xml",
-        "source": "/Users/Edmund/.gradle/caches/transforms-1/files-1.1/react-native-0.55.4.aar/d12a855b7d83129cc3c154a582c157c3/res/anim/catalyst_slide_down.xml"
+        "merged": "F:\\AndroidStudioProjects\\WhereToEat\\android\\app\\build\\intermediates\\res\\merged\\debug\\anim\\catalyst_slide_up.xml",
+        "source": "C:\\Users\\SiuBo\\.gradle\\caches\\transforms-1\\files-1.1\\react-native-0.55.3.aar\\ae1170badf0f0682606d181182bba326\\res\\anim\\catalyst_slide_up.xml"
     },
     {
-        "merged": "/Users/Edmund/Desktop/CUHK/csci4140/WhereToEat/android/app/build/intermediates/res/merged/debug/anim/abc_popup_exit.xml",
-        "source": "/Users/Edmund/.gradle/caches/transforms-1/files-1.1/appcompat-v7-23.0.1.aar/e4e8cff7c5feb59fa822da982659eb7e/res/anim/abc_popup_exit.xml"
+        "merged": "F:\\AndroidStudioProjects\\WhereToEat\\android\\app\\build\\intermediates\\res\\merged\\debug\\anim\\abc_popup_enter.xml",
+        "source": "C:\\Users\\SiuBo\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-23.0.1.aar\\53ff78abacd3f1c05f4e38948a1bb89a\\res\\anim\\abc_popup_enter.xml"
     },
     {
-        "merged": "/Users/Edmund/Desktop/CUHK/csci4140/WhereToEat/android/app/build/intermediates/res/merged/debug/anim/abc_slide_out_top.xml",
-        "source": "/Users/Edmund/.gradle/caches/transforms-1/files-1.1/appcompat-v7-23.0.1.aar/e4e8cff7c5feb59fa822da982659eb7e/res/anim/abc_slide_out_top.xml"
+        "merged": "F:\\AndroidStudioProjects\\WhereToEat\\android\\app\\build\\intermediates\\res\\merged\\debug\\anim\\catalyst_fade_out.xml",
+        "source": "C:\\Users\\SiuBo\\.gradle\\caches\\transforms-1\\files-1.1\\react-native-0.55.3.aar\\ae1170badf0f0682606d181182bba326\\res\\anim\\catalyst_fade_out.xml"
     },
     {
-        "merged": "/Users/Edmund/Desktop/CUHK/csci4140/WhereToEat/android/app/build/intermediates/res/merged/debug/anim/abc_slide_in_bottom.xml",
-        "source": "/Users/Edmund/.gradle/caches/transforms-1/files-1.1/appcompat-v7-23.0.1.aar/e4e8cff7c5feb59fa822da982659eb7e/res/anim/abc_slide_in_bottom.xml"
+        "merged": "F:\\AndroidStudioProjects\\WhereToEat\\android\\app\\build\\intermediates\\res\\merged\\debug\\anim\\catalyst_slide_down.xml",
+        "source": "C:\\Users\\SiuBo\\.gradle\\caches\\transforms-1\\files-1.1\\react-native-0.55.3.aar\\ae1170badf0f0682606d181182bba326\\res\\anim\\catalyst_slide_down.xml"
     },
     {
-        "merged": "/Users/Edmund/Desktop/CUHK/csci4140/WhereToEat/android/app/build/intermediates/res/merged/debug/anim/abc_slide_out_bottom.xml",
-        "source": "/Users/Edmund/.gradle/caches/transforms-1/files-1.1/appcompat-v7-23.0.1.aar/e4e8cff7c5feb59fa822da982659eb7e/res/anim/abc_slide_out_bottom.xml"
+        "merged": "F:\\AndroidStudioProjects\\WhereToEat\\android\\app\\build\\intermediates\\res\\merged\\debug\\anim\\abc_slide_in_bottom.xml",
+        "source": "C:\\Users\\SiuBo\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-23.0.1.aar\\53ff78abacd3f1c05f4e38948a1bb89a\\res\\anim\\abc_slide_in_bottom.xml"
     },
     {
-        "merged": "/Users/Edmund/Desktop/CUHK/csci4140/WhereToEat/android/app/build/intermediates/res/merged/debug/anim/catalyst_slide_up.xml",
-        "source": "/Users/Edmund/.gradle/caches/transforms-1/files-1.1/react-native-0.55.4.aar/d12a855b7d83129cc3c154a582c157c3/res/anim/catalyst_slide_up.xml"
+        "merged": "F:\\AndroidStudioProjects\\WhereToEat\\android\\app\\build\\intermediates\\res\\merged\\debug\\anim\\abc_slide_out_bottom.xml",
+        "source": "C:\\Users\\SiuBo\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-23.0.1.aar\\53ff78abacd3f1c05f4e38948a1bb89a\\res\\anim\\abc_slide_out_bottom.xml"
     },
     {
-        "merged": "/Users/Edmund/Desktop/CUHK/csci4140/WhereToEat/android/app/build/intermediates/res/merged/debug/anim/abc_grow_fade_in_from_bottom.xml",
-        "source": "/Users/Edmund/.gradle/caches/transforms-1/files-1.1/appcompat-v7-23.0.1.aar/e4e8cff7c5feb59fa822da982659eb7e/res/anim/abc_grow_fade_in_from_bottom.xml"
+        "merged": "F:\\AndroidStudioProjects\\WhereToEat\\android\\app\\build\\intermediates\\res\\merged\\debug\\anim\\catalyst_fade_in.xml",
+        "source": "C:\\Users\\SiuBo\\.gradle\\caches\\transforms-1\\files-1.1\\react-native-0.55.3.aar\\ae1170badf0f0682606d181182bba326\\res\\anim\\catalyst_fade_in.xml"
     },
     {
-        "merged": "/Users/Edmund/Desktop/CUHK/csci4140/WhereToEat/android/app/build/intermediates/res/merged/debug/anim/abc_shrink_fade_out_from_bottom.xml",
-        "source": "/Users/Edmund/.gradle/caches/transforms-1/files-1.1/appcompat-v7-23.0.1.aar/e4e8cff7c5feb59fa822da982659eb7e/res/anim/abc_shrink_fade_out_from_bottom.xml"
+        "merged": "F:\\AndroidStudioProjects\\WhereToEat\\android\\app\\build\\intermediates\\res\\merged\\debug\\anim\\abc_popup_exit.xml",
+        "source": "C:\\Users\\SiuBo\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-23.0.1.aar\\53ff78abacd3f1c05f4e38948a1bb89a\\res\\anim\\abc_popup_exit.xml"
     },
     {
-        "merged": "/Users/Edmund/Desktop/CUHK/csci4140/WhereToEat/android/app/build/intermediates/res/merged/debug/anim/abc_fade_in.xml",
-        "source": "/Users/Edmund/.gradle/caches/transforms-1/files-1.1/appcompat-v7-23.0.1.aar/e4e8cff7c5feb59fa822da982659eb7e/res/anim/abc_fade_in.xml"
+        "merged": "F:\\AndroidStudioProjects\\WhereToEat\\android\\app\\build\\intermediates\\res\\merged\\debug\\anim\\abc_shrink_fade_out_from_bottom.xml",
+        "source": "C:\\Users\\SiuBo\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-23.0.1.aar\\53ff78abacd3f1c05f4e38948a1bb89a\\res\\anim\\abc_shrink_fade_out_from_bottom.xml"
     },
     {
-        "merged": "/Users/Edmund/Desktop/CUHK/csci4140/WhereToEat/android/app/build/intermediates/res/merged/debug/anim/abc_popup_enter.xml",
-        "source": "/Users/Edmund/.gradle/caches/transforms-1/files-1.1/appcompat-v7-23.0.1.aar/e4e8cff7c5feb59fa822da982659eb7e/res/anim/abc_popup_enter.xml"
+        "merged": "F:\\AndroidStudioProjects\\WhereToEat\\android\\app\\build\\intermediates\\res\\merged\\debug\\anim\\catalyst_push_up_out.xml",
+        "source": "C:\\Users\\SiuBo\\.gradle\\caches\\transforms-1\\files-1.1\\react-native-0.55.3.aar\\ae1170badf0f0682606d181182bba326\\res\\anim\\catalyst_push_up_out.xml"
     },
     {
-        "merged": "/Users/Edmund/Desktop/CUHK/csci4140/WhereToEat/android/app/build/intermediates/res/merged/debug/anim/catalyst_push_up_out.xml",
-        "source": "/Users/Edmund/.gradle/caches/transforms-1/files-1.1/react-native-0.55.4.aar/d12a855b7d83129cc3c154a582c157c3/res/anim/catalyst_push_up_out.xml"
+        "merged": "F:\\AndroidStudioProjects\\WhereToEat\\android\\app\\build\\intermediates\\res\\merged\\debug\\anim\\abc_fade_in.xml",
+        "source": "C:\\Users\\SiuBo\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-23.0.1.aar\\53ff78abacd3f1c05f4e38948a1bb89a\\res\\anim\\abc_fade_in.xml"
     },
     {
-        "merged": "/Users/Edmund/Desktop/CUHK/csci4140/WhereToEat/android/app/build/intermediates/res/merged/debug/anim/catalyst_push_up_in.xml",
-        "source": "/Users/Edmund/.gradle/caches/transforms-1/files-1.1/react-native-0.55.4.aar/d12a855b7d83129cc3c154a582c157c3/res/anim/catalyst_push_up_in.xml"
+        "merged": "F:\\AndroidStudioProjects\\WhereToEat\\android\\app\\build\\intermediates\\res\\merged\\debug\\anim\\catalyst_push_up_in.xml",
+        "source": "C:\\Users\\SiuBo\\.gradle\\caches\\transforms-1\\files-1.1\\react-native-0.55.3.aar\\ae1170badf0f0682606d181182bba326\\res\\anim\\catalyst_push_up_in.xml"
     },
     {
-        "merged": "/Users/Edmund/Desktop/CUHK/csci4140/WhereToEat/android/app/build/intermediates/res/merged/debug/anim/abc_slide_in_top.xml",
-        "source": "/Users/Edmund/.gradle/caches/transforms-1/files-1.1/appcompat-v7-23.0.1.aar/e4e8cff7c5feb59fa822da982659eb7e/res/anim/abc_slide_in_top.xml"
+        "merged": "F:\\AndroidStudioProjects\\WhereToEat\\android\\app\\build\\intermediates\\res\\merged\\debug\\anim\\abc_slide_out_top.xml",
+        "source": "C:\\Users\\SiuBo\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-23.0.1.aar\\53ff78abacd3f1c05f4e38948a1bb89a\\res\\anim\\abc_slide_out_top.xml"
     },
     {
-        "merged": "/Users/Edmund/Desktop/CUHK/csci4140/WhereToEat/android/app/build/intermediates/res/merged/debug/anim/abc_fade_out.xml",
-        "source": "/Users/Edmund/.gradle/caches/transforms-1/files-1.1/appcompat-v7-23.0.1.aar/e4e8cff7c5feb59fa822da982659eb7e/res/anim/abc_fade_out.xml"
+        "merged": "F:\\AndroidStudioProjects\\WhereToEat\\android\\app\\build\\intermediates\\res\\merged\\debug\\anim\\abc_slide_in_top.xml",
+        "source": "C:\\Users\\SiuBo\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-23.0.1.aar\\53ff78abacd3f1c05f4e38948a1bb89a\\res\\anim\\abc_slide_in_top.xml"
     },
     {
-        "merged": "/Users/Edmund/Desktop/CUHK/csci4140/WhereToEat/android/app/build/intermediates/res/merged/debug/anim/catalyst_fade_in.xml",
-        "source": "/Users/Edmund/.gradle/caches/transforms-1/files-1.1/react-native-0.55.4.aar/d12a855b7d83129cc3c154a582c157c3/res/anim/catalyst_fade_in.xml"
+        "merged": "F:\\AndroidStudioProjects\\WhereToEat\\android\\app\\build\\intermediates\\res\\merged\\debug\\anim\\abc_grow_fade_in_from_bottom.xml",
+        "source": "C:\\Users\\SiuBo\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-23.0.1.aar\\53ff78abacd3f1c05f4e38948a1bb89a\\res\\anim\\abc_grow_fade_in_from_bottom.xml"
     },
     {
-        "merged": "/Users/Edmund/Desktop/CUHK/csci4140/WhereToEat/android/app/build/intermediates/res/merged/debug/anim/catalyst_fade_out.xml",
-        "source": "/Users/Edmund/.gradle/caches/transforms-1/files-1.1/react-native-0.55.4.aar/d12a855b7d83129cc3c154a582c157c3/res/anim/catalyst_fade_out.xml"
+        "merged": "F:\\AndroidStudioProjects\\WhereToEat\\android\\app\\build\\intermediates\\res\\merged\\debug\\anim\\abc_fade_out.xml",
+        "source": "C:\\Users\\SiuBo\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-23.0.1.aar\\53ff78abacd3f1c05f4e38948a1bb89a\\res\\anim\\abc_fade_out.xml"
     }
 ]

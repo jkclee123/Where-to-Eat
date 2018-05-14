@@ -48,7 +48,7 @@
             android:value="AIzaSyA5LG7Zq8rYs0Jsgf0RP87PJUGqKi-4yBw" />
 
         <provider
-            android:name="com.imagepicker.FileProvider"
+            android:name="android.support.v4.content.FileProvider"
             android:authorities="com.wheretoeat.provider"
             android:exported="false"
             android:grantUriPermissions="true" >

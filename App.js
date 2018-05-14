@@ -338,7 +338,6 @@ class HomeScreen extends React.Component {
                     { latitude: this.state.lat, longitude: this.state.lng },
                     { latitude: openrice_data[this.position - 1].location.latitude, longitude: openrice_data[this.position - 1].location.longitude}
                   )
-                this.onReceive(this.latlngdistance)  
               }
             }
             this.fetchResult()
