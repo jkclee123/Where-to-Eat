@@ -1,5 +1,5 @@
 #Internal package file, do not edit.
-#Mon May 14 18:40:35 HKT 2018
+#Tue May 15 01:12:33 HKT 2018
 17.baseType=DIRECTORY
 4.path=lib/x86/libfolly_json.so
 25.base=/Users/Edmund/Desktop/CUHK/csci4140/WhereToEat/android/app/build/intermediates/transforms/mergeJniLibs/debug/0
