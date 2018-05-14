@@ -9,7 +9,9 @@ import {
   Button,
   Image,
   YellowBox,
-  AsyncStorage
+  AsyncStorage,
+  FlatList,
+  ScrollView
 } from 'react-native';
 import {GiftedChat, Actions, Bubble, SystemMessage} from 'react-native-gifted-chat';
 import CustomActions from './CustomActions';
@@ -819,7 +821,8 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    marginTop: 20
   },
   noTargetText: {
     fontFamily: 'Cochin',
@@ -844,12 +847,37 @@ class FirstScreen extends React.Component{
 
   render(){
     return(
-      <View style={styles.firstView}>
-        <Text style={styles.firstText}>You have consumed {global.consumed.toString()} kcal today</Text>
-        {global.hasTarget ? <Text style={styles.firstText}>You can only consume {global.target.toString()} kcal daily</Text> : null}
-        { global.hasTarget ? null : <Text style={styles.noTargetText}>Set your calorie target!</Text> }
-        <Progress.Circle style={{marginTop: 50}} progress={global.consumed / global.target} size={300} thickness={10} showsText={true} indeterminate={global.hasTarget ? false : true}/>
-      </View>  
+      <ScrollView>
+        <View style={styles.firstView}>
+          <Text style={styles.firstText}>You have consumed {global.consumed.toString()} kcal today</Text>
+          {global.hasTarget ? <Text style={styles.firstText}>You can only consume {global.target.toString()} kcal daily</Text> : null}
+          { global.hasTarget ? null : <Text style={styles.noTargetText}>Set your calorie target!</Text> }
+          <Progress.Circle style={{marginTop: 50}} progress={global.consumed / global.target} size={300} thickness={10} showsText={true} indeterminate={global.hasTarget ? false : true}/>
+        </View>
+        <View>
+          <FlatList
+            data={[
+              {key: 'Devin'},
+              {key: 'Jackson'},
+              {key: 'James'},
+              {key: 'Joel'},
+              {key: 'John'},
+              {key: 'Jillian'},
+              {key: 'Jimmy'},
+              {key: 'Julie'},
+              {key: 'Devin'},
+              {key: 'Jackson'},
+              {key: 'James'},
+              {key: 'Joel'},
+              {key: 'John'},
+              {key: 'Jillian'},
+              {key: 'Jimmy'},
+              {key: 'Julie'},
+            ]}
+            renderItem={({item}) => <Text style={styles.item}>{item.key}</Text>}
+          />
+        </View>
+      </ScrollView>  
     )
   }
 }
@@ -863,7 +891,7 @@ export default createStackNavigator(
     initialRouteName: 'Home'
   }, {
     navigationOptions: {
-      headerTintColor: '#000'
+      headerTintColor: '#0F0'
     }
   }
 );
