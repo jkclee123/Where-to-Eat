@@ -20,6 +20,7 @@ import { createStackNavigator } from 'react-navigation';
 import ImagePicker from 'react-native-image-picker'
 import * as Progress from 'react-native-progress';
 import geolib from 'geolib';
+import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-table-component';
 
 YellowBox.ignoreWarnings(['Warning: isMounted(...) is deprecated', 'Module RCTImageLoader']);
 
@@ -107,11 +108,21 @@ class HomeScreen extends React.Component {
 
     global.date = (new Date()).getDate().toString()
     AsyncStorage.getItem("date").then((value) => {
-      if (value != global.date || value == null)
+      if (value != global.date || value == null){
         global.consumed = 0
+        global.foodlist = []
+      }
       else{
         AsyncStorage.getItem("consumed").then((value) => {
           global.consumed = parseInt(value)
+        }).done();
+        AsyncStorage.getItem("foodlist").then((value) => {
+          if (value != null){
+            global.foodlist = JSON.parse(value)
+          }
+          else{
+            global.foodlist = []
+          }
         }).done();
       }
     }).done()    
@@ -123,17 +134,6 @@ class HomeScreen extends React.Component {
       else{
         global.target = 0
         global.hasTarget = false
-      }
-    }).done()
-
-    AsyncStorage.getItem("foodlist").then((value) => {
-      if (value != null){
-        global.foodlist = JSON.parse(value)
-        global.hasFoodlist = true
-      }
-      else{
-        global.foodlist = []
-        global.hasFoodlist = false
       }
     }).done()
 
@@ -429,7 +429,7 @@ class HomeScreen extends React.Component {
             AsyncStorage.setItem('date', global.date);
             this.message_state = this.prev_state
 
-            global.foodlist.push({"name": this.foodname, "calorieper1": this.calories, "unit":this.foodunit, "amount":this.foodamount, "totalcal": Math.round(parseInt(messages[0].text) / this.gram * this.calories)})
+            global.foodlist.push({"time": this.foodtime, "name": this.foodname, "calorieper1": this.calories, "amount":this.foodamount.toString()+this.foodunit, "totalcal": Math.round(parseInt(messages[0].text) / this.gram * this.calories)})
             AsyncStorage.setItem('foodlist', JSON.stringify(global.foodlist));
             this.reaskQuestion()
           }
@@ -605,13 +605,14 @@ class HomeScreen extends React.Component {
               this.reaskQuestion()
             }
             else{
-              this.answerOutput("It is " + result_list[1].replace("_"," ") + "\nContaining " + result_list[2] + " calories per " + result_list[3].replace ( /[^\d.]/g, '' )+" "+result_list[3].replace ( /[0-9.]/g, '' )+ "\nHow many "+result_list[3].replace ( /[0-9.]/g, '' )+" did you consume?")
+              this.answerOutput("It is " + result_list[1].replace("_"," ") + "\nContaining " + result_list[2] + " calories per " + result_list[3].replace ( /[^\d.]/g, '' )+" "+result_list[3].replace ( /[0-9.,]/g, '' )+ "\nHow many "+result_list[3].replace ( /[0-9.]/g, '' )+" did you consume?")
               this.calories = parseInt(result_list[2])
               this.gram = parseInt(result_list[3].slice(0, -2))
               this.message_state = state_choose_calories
-              this.foodunit = result_list[3].replace ( /[0-9.]/g, '' )
+              this.foodunit = result_list[3].replace ( /[0-9.,]/g, '' )
               this.foodname = result_list[1].replace("_"," ")
-              this.foodtime = (new Date()).getDate().toString()
+              let date = (new Date())
+              this.foodtime = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds()
             }
           })
           .catch(err => { 
@@ -854,7 +855,12 @@ const styles = StyleSheet.create({
     fontFamily: 'Cochin',
     fontSize: 15,
     marginTop: 10
-  }
+  },
+
+
+  container: { flex: 1, padding: 16},
+    head: { height: 40, backgroundColor: '#f1f8ff' },
+    text: { margin: 6 }
 });
 
 var options = {
@@ -870,13 +876,22 @@ class FirstScreen extends React.Component{
     title: 'ChatBot',
     headerStyle: { backgroundColor: '#FFF' },
   }); 
-  constructor() {
-    super();
-    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-
+  constructor(props) {
+    super(props);
+    result = [];
+    let items = global.foodlist
+    for(let i=0; i < items.length; i++){
+        result.push([items[i].time, items[i].name, items[i].amount, items[i].totalcal])
+    }
+    this.state = {
+      tableHead: ['Time', 'Food', 'Consumed', 'Calories'],
+      tableData: result
+    }
   }
 
   render(){
+    const state = this.state;
+
     return(
       <ScrollView>
         <View style={styles.firstView}>
@@ -884,34 +899,22 @@ class FirstScreen extends React.Component{
           {global.hasTarget ? <Text style={styles.firstText}>You can only consume {global.target.toString()} kcal daily</Text> : null}
           { global.hasTarget ? null : <Text style={styles.noTargetText}>Set your calorie target!</Text> }
           <Progress.Circle style={{marginTop: 50}} progress={global.consumed / global.target} size={300} thickness={10} showsText={true} indeterminate={global.hasTarget ? false : true}/>
+          <Text style={styles.firstText}> </Text>
+          { global.foodlist.length>0 ? <Text style={styles.firstText}>Today's Food List</Text> : <Text style={styles.firstText}>Haven't eat today? Use Food Consultant!</Text> }
         </View>
-        <View>
-          <Text style={styles.firstText}>You have consumed {JSON.stringify(global.foodlist)}</Text>
-          <FlatList
-            data={[
-              {key: 'Devin'},
-              {key: 'Jackson'},
-              {key: 'James'},
-              {key: 'Joel'},
-              {key: 'John'},
-              {key: 'Jillian'},
-              {key: 'Jimmy'},
-              {key: 'Julie'},
-              {key: 'Devin'},
-              {key: 'Jackson'},
-              {key: 'James'},
-              {key: 'Joel'},
-              {key: 'John'},
-              {key: 'Jillian'},
-              {key: 'Jimmy'},
-              {key: 'Julie'},
-            ]}
-            renderItem={({item}) => <Text style={styles.item}>{item.key}</Text>}
-          />
+        { global.foodlist.length>0 ?
+        <View style={styles.container}>
+          
+          <Table borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}}>
+            <Row data={state.tableHead} style={styles.head} textStyle={styles.text}/>
+            <Rows data={state.tableData} textStyle={styles.text}/>
+          </Table>
         </View>
+        : null}
       </ScrollView>  
     )
   }
+  
 }
 //
 
