@@ -319,7 +319,7 @@ class HomeScreen extends React.Component {
           break
             
         case state_get_next_choice:
-          if (nlp_input.has("(pass|not|know)")){
+          if (nlp_input.has("(pass|not|no)")){
             this.prev_position[this.prev_position.length] = this.position - 1;
             this.fetchResult()         
           }
@@ -429,7 +429,7 @@ class HomeScreen extends React.Component {
             AsyncStorage.setItem('date', global.date);
             this.message_state = this.prev_state
 
-            global.foodlist.push({"time": this.foodtime, "name": this.foodname, "calorieper1": this.calories, "amount":this.foodamount.toString()+this.foodunit, "totalcal": Math.round(parseInt(messages[0].text) / this.gram * this.calories)})
+            global.foodlist.push({"time": this.foodtime, "name": this.foodname, "calorieper1": this.calories, "amount":this.foodamount.toString()+this.foodunit, "totalcal": Math.round(parseInt(messages[0].text) / this.gram * this.calories).toString()+"kcal"})
             AsyncStorage.setItem('foodlist', JSON.stringify(global.foodlist));
             this.reaskQuestion()
           }
@@ -873,7 +873,7 @@ var options = {
 
 class FirstScreen extends React.Component{
   static navigationOptions = ({ navigation }) => ({
-    title: 'ChatBot',
+    title: 'Calorie Meter',
     headerStyle: { backgroundColor: '#FFF' },
   }); 
   constructor(props) {
