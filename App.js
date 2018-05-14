@@ -84,6 +84,20 @@ class HomeScreen extends React.Component {
       };
     });
 
+    navigator.geolocation.getCurrentPosition( (position) => {
+      this.setState({
+        lat: position.coords.latitude,
+        lng: position.coords.longitude,
+        error: null,
+      });
+    },
+    (error) => this.setState({ error: error.message }),
+    { 
+      enableHighAccuracy: true, 
+      timeout: 60000000, 
+      maximumAge: 1000 
+    });
+
     global.date = (new Date()).getDate().toString()
     AsyncStorage.getItem("date").then((value) => {
       if (value != global.date || value == null)
@@ -122,20 +136,6 @@ class HomeScreen extends React.Component {
   }); 
 
   fetchResult(){
-
-    navigator.geolocation.getCurrentPosition( (position) => {
-      this.setState({
-        lat: position.coords.latitude,
-        lng: position.coords.longitude,
-        error: null,
-      });
-    },
-    (error) => this.setState({ error: error.message }),
-    { 
-      enableHighAccuracy: true, 
-      timeout: 60000000, 
-      maximumAge: 1000 
-    });
     for (var i = this.position; i < openrice_data.length; i++) {
       let districts_flag = false
       for (let d in this.districts){
@@ -342,20 +342,6 @@ class HomeScreen extends React.Component {
           }
 
           else if (nlp_input.has("(far)")){
-
-    navigator.geolocation.getCurrentPosition( (position) => {
-      this.setState({
-        lat: position.coords.latitude,
-        lng: position.coords.longitude,
-        error: null,
-      });
-    },
-    (error) => this.setState({ error: error.message }),
-    { 
-      enableHighAccuracy: true, 
-      timeout: 60000000, 
-      maximumAge: 1000 
-    });
             this.answerOutput("I agree that's a bit far!")
             if (nlp_input.has("(mtr)")){
               if (openrice_data[this.position - 1].mtr != null)
