@@ -343,7 +343,7 @@ class HomeScreen extends React.Component {
             this.prev_position[this.prev_position.length] = this.position - 1;
             this.whitelist_cuisine[this.whitelist_cuisine.length] = messages[0].text.toLowerCase().split("like")[1].slice(1)
             this.answerOutput("I like " + messages[0].text.toLowerCase().split("like")[1].slice(1) + " too!")
-            this.onReceive(this.whitelist_cuisine)
+            //this.onReceive(this.whitelist_cuisine)
             this.fetchResult()
           }
 
