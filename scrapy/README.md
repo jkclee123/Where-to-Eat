@@ -1,4 +1,4 @@
-This folder is the Scrapy Program for crawling data from OpenRice
+This folder for the Scrapy Program for crawling data from OpenRice
 
 ## How to Run
 
