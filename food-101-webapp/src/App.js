@@ -300,7 +300,7 @@ class App extends Component {
         { !modelLoaded ?
         <p className='intro'>
           The file may be
-          fairly large for some (85 MB), so keep that in mind if progress seems stuck.
+          fairly large (85 MB), so keep that in mind if progress seems stuck.
         </p>
         : ''}
         <div className='init'>
