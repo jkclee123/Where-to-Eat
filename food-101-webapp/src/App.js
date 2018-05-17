@@ -296,11 +296,10 @@ class App extends Component {
     } = this.state;
     return (
       <div id="App" className="App">
-        <h1>Food Classification</h1>
+        <h1>WhereToEat Food Classification</h1>
         { !modelLoaded ?
         <p className='intro'>
-          To get started, click the Load Model button to download the model that
-          we have built and exported using the Python notebook. The file may be
+          The file may be
           fairly large for some (85 MB), so keep that in mind if progress seems stuck.
         </p>
         : ''}
