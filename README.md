@@ -17,4 +17,5 @@ run "react-native run-android"
 
 
 URL https://github.com/jkclee123/WhereToEat
+
 Latest Commit: 1 parent 2cb88fd commit f11ebe1b715909e34ad7118489e8a9eeff6b60b8
